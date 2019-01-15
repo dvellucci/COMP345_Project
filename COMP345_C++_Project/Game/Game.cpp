@@ -1,16 +1,17 @@
 #include "Game.h"
 
-Game::Game() {
-
+Game::Game() 
+{
+	TextureHolder::Instance()->load(Textures::Title, "Textures/smallworld.jpg");
 }
 
-Game::~Game() {
-
+Game::~Game() 
+{
 }
 
 void Game::start()
 {
-	mainWindow.create(sf::VideoMode(1600, 1062, 32), "COMP 345", sf::Style::Titlebar | sf::Style::Close);
+	mainWindow.create(sf::VideoMode(1200, 800, 32), "COMP 345", sf::Style::Titlebar | sf::Style::Close);
 	gameLoop();
 }
 
@@ -19,7 +20,7 @@ void Game::gameLoop()
 	sf::Event currEvent;
 
 	auto stateID = GameStates::PLAYING;
-	m_currentState = std::make_unique<Intro>();
+	m_currentState = std::make_unique<IntroState>();
 
 	while (mainWindow.isOpen())
 	{
@@ -53,10 +54,13 @@ void Game::changeState()
 		switch (nextState)
 		{
 		case INTRO:
-			m_currentState = std::make_unique<Intro>();
+			m_currentState = std::make_unique<IntroState>();
 			break;
 		case MAIN_MENU:
-			m_currentState = std::make_unique<Intro>();
+			m_currentState = std::make_unique<IntroState>();
+			break;
+		case PLAYING:
+			m_currentState = std::make_unique<PlayingState>();
 			break;
 		case EXIT:
 			mainWindow.close();

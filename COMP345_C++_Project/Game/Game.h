@@ -3,8 +3,8 @@
 #include <memory>
 #include "GameState.h"
 #include "GameStates.h"
-#include "Intro.h"
-
+#include "IntroState.h"
+#include "PlayingState.h"
 
 class Game
 {
@@ -19,10 +19,7 @@ public:
 private:
 
 	sf::RenderWindow mainWindow;
-	//Game state object
-	//GameState *m_currentState;
 	std::unique_ptr<GameState> m_currentState;
-
 
 };
 

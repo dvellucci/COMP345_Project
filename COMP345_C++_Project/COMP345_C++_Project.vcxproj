@@ -128,15 +128,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Game.cpp" />
-    <ClCompile Include="Game\Intro.cpp" />
+    <ClCompile Include="Game\IntroState.cpp" />
     <ClCompile Include="Game\main.cpp" />
+    <ClCompile Include="Game\PlayingState.cpp" />
     <ClCompile Include="Game\TextureHolder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\GameState.h" />
     <ClInclude Include="Game\GameStates.h" />
-    <ClInclude Include="Game\Intro.h" />
+    <ClInclude Include="Game\IntroState.h" />
+    <ClInclude Include="Game\PlayingState.h" />
     <ClInclude Include="Game\TextureHolder.h" />
     <ClInclude Include="Game\Textures.h" />
   </ItemGroup>

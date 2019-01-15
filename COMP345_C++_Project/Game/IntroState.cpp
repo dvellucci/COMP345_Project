@@ -1,19 +1,18 @@
-#include "Intro.h"
+#include "IntroState.h"
 #include <iostream>
 
 
-Intro::Intro() : close(false)
+IntroState::IntroState() : close(false)
 {
-	TextureHolder::Instance()->load(Textures::Title, "Textures/smallworld.jpg");
 	m_titleSprite.setTexture(TextureHolder::Instance()->get(Textures::Title));
 }
 
-Intro::~Intro()
+IntroState::~IntroState()
 {
 
 }
 
-void Intro::handle_events(sf::RenderWindow& window, sf::Event& currEvent)
+void IntroState::handle_events(sf::RenderWindow& window, sf::Event& currEvent)
 {
 	while (window.pollEvent(currEvent))
 	{
@@ -23,7 +22,7 @@ void Intro::handle_events(sf::RenderWindow& window, sf::Event& currEvent)
 			if (currEvent.key.code == sf::Keyboard::Return)
 			{
 				//Move to the main menu
-				setNextState(GameStates::MAIN_MENU);
+				setNextState(GameStates::PLAYING);
 			}
 			else if (currEvent.key.code == sf::Keyboard::Escape)
 			{
@@ -34,12 +33,12 @@ void Intro::handle_events(sf::RenderWindow& window, sf::Event& currEvent)
 	}
 }
 
-void Intro::logic()
+void IntroState::logic()
 {
 
 }
 
-void Intro::draw(sf::RenderWindow& window)
+void IntroState::draw(sf::RenderWindow& window)
 {
 	window.draw(m_titleSprite);
 }

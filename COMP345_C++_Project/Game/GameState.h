@@ -8,6 +8,8 @@ class GameState
 {
 public:
 	virtual ~GameState() {};
+
+	//virtual functions to be implemented by classes that derive from this one
 	virtual void handle_events(sf::RenderWindow& window, sf::Event& currEvent) = 0;
 	virtual void logic() = 0;
 	virtual void draw(sf::RenderWindow& window) = 0;

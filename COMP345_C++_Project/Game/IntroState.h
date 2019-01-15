@@ -5,16 +5,16 @@
 #include "GameStates.h"
 #include "TextureHolder.h"
 
-class Intro : public GameState
+class IntroState : public GameState
 {
 public:
-	Intro();
-	~Intro();
+	IntroState();
+	~IntroState();
 
 	//Main loop functions
-	void handle_events(sf::RenderWindow& window, sf::Event& currEvent);
-	void logic();
-	void draw(sf::RenderWindow& window);
+	void handle_events(sf::RenderWindow& window, sf::Event& currEvent) override;
+	void logic() override;
+	void draw(sf::RenderWindow& window) override;
 	bool getIsClosed() { return close; };
 
 private:
