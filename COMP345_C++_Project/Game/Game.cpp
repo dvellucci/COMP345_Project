@@ -11,7 +11,9 @@ Game::~Game()
 
 void Game::start()
 {
+	//create the window and set the max fps
 	mainWindow.create(sf::VideoMode(1200, 800, 32), "COMP 345", sf::Style::Titlebar | sf::Style::Close);
+	mainWindow.setFramerateLimit(60);
 	gameLoop();
 }
 
@@ -24,6 +26,7 @@ void Game::gameLoop()
 
 	while (mainWindow.isOpen())
 	{
+		//handle any events in a state
 		m_currentState->handle_events(mainWindow, currEvent);
 
 		//Do state logic
