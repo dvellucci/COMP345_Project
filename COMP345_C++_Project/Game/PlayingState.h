@@ -23,8 +23,7 @@ public:
 private:
 	sf::Sprite m_sprite;
 	std::vector<std::unique_ptr<Player>> players;
-
-	int m_playerTurn;
+	bool m_playing;
 	bool m_quit;
 };
 

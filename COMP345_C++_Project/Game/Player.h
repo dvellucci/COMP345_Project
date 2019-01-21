@@ -8,7 +8,8 @@ public:
 	~Player();
 
 	void doPlayerTurn();
-	void handlePlayerEvents(sf::RenderWindow& window, sf::Event& currEvent);
+	bool getQuit() { return m_quit; }
+
 private:
-	
+	bool m_quit;
 };

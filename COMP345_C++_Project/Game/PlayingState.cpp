@@ -1,6 +1,6 @@
 #include "PlayingState.h"
 
-PlayingState::PlayingState() : m_playerTurn(0), m_quit(false)
+PlayingState::PlayingState() : m_quit(false), m_playing(false)
 {
 	instantiatePlayers();
 	std::cout << players.size() << " player game" << std::endl;
@@ -31,10 +31,9 @@ void PlayingState::handle_events(sf::RenderWindow & window, sf::Event & currEven
 
 void PlayingState::logic()
 {
-	bool quit = false;
-	while (true)
+	while (m_playing)
 	{
-		if (quit)
+		if (m_quit)
 		{
 			setNextState(GameStates::INTRO);
 			break;
@@ -43,7 +42,7 @@ void PlayingState::logic()
 		//make each player do their turn
 		for (const auto &player : players)
 		{
-			//player->doPlayerTurn();
+			player->doPlayerTurn();
 		}
 	}
 }
@@ -64,5 +63,6 @@ void PlayingState::instantiatePlayers()
 	{
 		std::unique_ptr<Player> player = std::make_unique<Player>();
 		players.push_back(std::move(player));
+		m_playing = true;
 	}
 }
