@@ -1,6 +1,6 @@
 #include "PlayingState.h"
 
-PlayingState::PlayingState() : m_playerTurn(0)
+PlayingState::PlayingState() : m_playerTurn(0), m_quit(false)
 {
 	instantiatePlayers();
 	std::cout << players.size() << " player game" << std::endl;
@@ -39,10 +39,11 @@ void PlayingState::logic()
 			setNextState(GameStates::INTRO);
 			break;
 		}
-			
+		
+		//make each player do their turn
 		for (const auto &player : players)
 		{
-			player->doPlayerTurn();
+			//player->doPlayerTurn();
 		}
 	}
 }

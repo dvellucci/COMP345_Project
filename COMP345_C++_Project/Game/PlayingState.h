@@ -25,6 +25,7 @@ private:
 	std::vector<std::unique_ptr<Player>> players;
 
 	int m_playerTurn;
+	bool m_quit;
 };
 
 #endif

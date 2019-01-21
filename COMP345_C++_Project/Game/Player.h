@@ -8,7 +8,7 @@ public:
 	~Player();
 
 	void doPlayerTurn();
-	bool win;
+	void handlePlayerEvents(sf::RenderWindow& window, sf::Event& currEvent);
 private:
 	
 };
