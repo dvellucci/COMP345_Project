@@ -128,11 +128,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Game.cpp" />
+    <ClCompile Include="Game\GameBoard\Map.cpp" />
     <ClCompile Include="Game\IntroState.cpp" />
     <ClCompile Include="Game\main.cpp" />
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Game\PlayingState.cpp" />
-    <ClCompile Include="Game\TextureHolder.cpp" />
+    <ClCompile Include="Game\ResourceHolder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Game.h" />
@@ -143,7 +144,7 @@
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\PlayingState.h" />
     <ClInclude Include="Game\GameBoard\RegionTypes.h" />
-    <ClInclude Include="Game\TextureHolder.h" />
+    <ClInclude Include="Game\ResourceHolder.h" />
     <ClInclude Include="Game\Textures.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

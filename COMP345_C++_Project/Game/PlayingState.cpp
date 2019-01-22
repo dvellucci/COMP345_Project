@@ -2,7 +2,7 @@
 
 PlayingState::PlayingState() : m_quit(false), m_playing(false)
 {
-	instantiatePlayers();
+	setUpGame();
 	std::cout << players.size() << " player game" << std::endl;
 	//might be usable
 	//if (m_image.getPixel(sf::Mouse::getPosition(window).x - m_sprite.getPosition().x, sf::Mouse::getPosition(window).y - m_sprite.getPosition().y).a > 0)
@@ -24,6 +24,10 @@ void PlayingState::handle_events(sf::RenderWindow & window, sf::Event & currEven
 			{
 				setNextState(GameStates::EXIT);
 			}
+			else if (currEvent.key.code == sf::Keyboard::Return)
+			{
+				m_playing = true;
+			}
 			break;
 		}
 	}
@@ -43,16 +47,18 @@ void PlayingState::logic()
 		for (const auto &player : players)
 		{
 			player->doPlayerTurn();
+			//update map after a player's turn
 		}
 	}
 }
 
-void PlayingState::draw(sf::RenderWindow & window)
+void PlayingState::draw(sf::RenderWindow &window)
 {
 	
 }
 
-void PlayingState::instantiatePlayers()
+//sets up the players and starts the game
+void PlayingState::setUpGame()
 {
 	int numOfPlayers = 0;
 	std::cout << "Enter number of players" << std::endl;
@@ -63,6 +69,7 @@ void PlayingState::instantiatePlayers()
 	{
 		std::unique_ptr<Player> player = std::make_unique<Player>();
 		players.push_back(std::move(player));
-		m_playing = true;
 	}
+
+	std::cout << "Press enter to play the game or escape to quit" << std::endl;
 }

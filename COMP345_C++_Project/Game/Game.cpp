@@ -2,7 +2,8 @@
 
 Game::Game() 
 {
-	TextureHolder::Instance()->load(Textures::Title, "Textures/smallworld.jpg");
+	ResourceHolder::Instance()->loadTexture(Textures::Title, "Textures/smallworld.jpg");
+	ResourceHolder::Instance()->loadFont(Fonts::Default, "Fonts/font.ttf");
 }
 
 Game::~Game() 

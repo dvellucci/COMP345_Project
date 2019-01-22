@@ -3,7 +3,7 @@
 #define Playing_H
 #include "GameState.h"
 #include "GameStates.h"
-#include "TextureHolder.h"
+#include "ResourceHolder.h"
 #include "Player.h"
 #include <vector>
 #include <iostream>
@@ -18,7 +18,7 @@ public:
 	void handle_events(sf::RenderWindow& window, sf::Event& currEvent) override;
 	void logic() override;
 	void draw(sf::RenderWindow& window) override;
-	void instantiatePlayers();
+	void setUpGame();
 
 private:
 	sf::Sprite m_sprite;

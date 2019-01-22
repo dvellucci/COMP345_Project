@@ -4,7 +4,7 @@
 
 IntroState::IntroState() : close(false)
 {
-	m_titleSprite.setTexture(TextureHolder::Instance()->get(Textures::Title));
+	m_titleSprite.setTexture(ResourceHolder::Instance()->get(Textures::Title));
 	m_titleSprite.setOrigin(m_titleSprite.getLocalBounds().width / 2.0f, m_titleSprite.getLocalBounds().height / 2.0f);
 	m_titleSprite.setPosition(1200 / 2, 800 / 2);
 }

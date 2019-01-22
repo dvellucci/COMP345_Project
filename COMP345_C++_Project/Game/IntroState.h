@@ -3,7 +3,7 @@
 #define Intro_H
 #include "GameState.h"
 #include "GameStates.h"
-#include "TextureHolder.h"
+#include "ResourceHolder.h"
 
 class IntroState : public GameState
 {
