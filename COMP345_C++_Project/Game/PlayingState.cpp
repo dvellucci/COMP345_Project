@@ -67,7 +67,7 @@ void PlayingState::setUpGame()
 	//initialize players
 	for (int i = 0; i < numOfPlayers; i++)
 	{
-		std::unique_ptr<Player> player = std::make_unique<Player>();
+		std::unique_ptr<Player> player = std::make_unique<Player>("player "+std::to_string(i+1));
 		players.push_back(std::move(player));
 	}
 

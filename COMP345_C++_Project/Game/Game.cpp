@@ -2,6 +2,7 @@
 
 Game::Game() 
 {
+	//load textures and fonts
 	ResourceHolder::Instance()->loadTexture(Textures::Title, "Textures/smallworld.jpg");
 	ResourceHolder::Instance()->loadFont(Fonts::Default, "Fonts/font.ttf");
 }
@@ -58,9 +59,6 @@ void Game::changeState()
 		switch (nextState)
 		{
 		case INTRO:
-			m_currentState = std::make_unique<IntroState>();
-			break;
-		case MAIN_MENU:
 			m_currentState = std::make_unique<IntroState>();
 			break;
 		case PLAYING:

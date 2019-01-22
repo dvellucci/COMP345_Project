@@ -21,6 +21,7 @@ private:
 
 		Regions m_regionType;
 		sf::Sprite m_tokenSprite;
+		float m_xPos, m_yPos;
 		bool m_isOwned;
 	};
 
