@@ -1,4 +1,5 @@
 #pragma once
+#include "Dice.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 

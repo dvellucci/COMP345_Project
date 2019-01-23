@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Dice.cpp" />
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Game\GameBoard\Map.cpp" />
     <ClCompile Include="Game\IntroState.cpp" />
@@ -136,6 +137,7 @@
     <ClCompile Include="Game\ResourceHolder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Dice.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\GameState.h" />
     <ClInclude Include="Game\GameStates.h" />

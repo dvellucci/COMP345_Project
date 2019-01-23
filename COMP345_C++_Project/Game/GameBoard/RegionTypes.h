@@ -1,6 +1,6 @@
 #pragma once
 
-enum Regions {
+enum class Regions : unsigned int {
 	HILL = 0,
 	SEA = 1,
 	SWAMP = 2,

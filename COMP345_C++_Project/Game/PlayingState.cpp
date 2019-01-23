@@ -71,5 +71,89 @@ void PlayingState::setUpGame()
 		players.push_back(std::move(player));
 	}
 
+	//parse the map data and the set the coordinates of the regions
+	m_map = loadMap("Maps/2_player_map.txt");
+	loadRegionCoords("Maps/2_player_map_coords.txt");
+
 	std::cout << "Press enter to play the game or escape to quit" << std::endl;
+}
+
+//parse the file
+Map PlayingState::loadMap(std::string filename)
+{	
+	//open the file
+	std::ifstream file;
+	try {
+		file.open(filename);
+	}
+	catch (...)
+	{
+		std::cout << "Failed to open file " + filename + "." << std::endl;
+	}
+
+	//first line is number of regions
+	std::string s;
+	getline(file, s);
+
+	//create the map
+	Map map;
+
+	char delimiter = ',';
+	//this keeps track of which region we are at in the text file 
+	int regionNumber = 1;
+	//lines are seperated by regions
+	while (!file.eof())
+	{
+		std::string s1;
+		getline(file, s1);
+
+		char regionType = s1.at(0);
+		map.setRegion(regionType);
+
+		//look at the other regions connected to the current region
+		std::string number = "";
+		for (int i = 4; i < s1.length(); i++)
+		{
+			if (s1.at(i) == delimiter)
+			{
+				//add an edge between the currennt region and it's adjacent regions
+				int adjacentRegion = std::stoi(number);
+				map.addEdge(regionNumber, adjacentRegion);
+				number = "";
+				continue;
+			}
+			number += s1.at(i);
+		}
+		
+		//go to the next region (the next line) in the text file
+		regionNumber++;
+	}
+	
+	file.close();
+	return map;
+}
+
+void PlayingState::loadRegionCoords(std::string filename)
+{
+	//open the file
+	std::ifstream file;
+	try {
+		file.open(filename);
+	}
+	catch (...)
+	{
+		std::cout << "Failed to open file " + filename + "." << std::endl;
+	}
+
+	char delimiter = ',';
+	float x, y;
+	//this keeps track of which region we are at in the text file (line 3 = region 3)
+	int regionNumber = 0;
+	while (!file.eof())
+	{
+		file >> x >> delimiter >> y;
+		m_map.getRegions()[regionNumber]->m_xPos = x;
+		m_map.getRegions()[regionNumber]->m_yPos = y;
+		regionNumber++;
+	}
 }
