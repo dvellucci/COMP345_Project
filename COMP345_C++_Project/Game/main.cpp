@@ -1,9 +1,54 @@
 #include "game.h"
 
+GameState *currentState = NULL;
+
+//the render function that will run on a seperate thread
+void renderingThread(sf::RenderWindow*& window)
+{
+	// activate the window's context
+	window->setActive(true);
+
+	// the rendering loop
+	while (window->isOpen())
+	{
+		window->clear();
+		currentState->draw(window);
+		window->display();
+	}
+}
+
+/*-----------------MAYBE PUT ALL THIS IN GAME CLASS------------*/
 int main()
 {
+	sf::RenderWindow mainWindow;
+	mainWindow.create(sf::VideoMode(1200, 800, 32), "COMP 345", sf::Style::Titlebar | sf::Style::Close);
+	mainWindow.setFramerateLimit(30);
+
 	Game game;
-	game.start();
+	//game.start();
+
+	sf::Event currEvent;
+	auto stateID = GameStates::PLAYING;
+	currentState = new IntroState();
+
+	
+	//start the thread that will do the rendering
+	mainWindow.setActive(false);
+	sf::Thread thread(&renderingThread, &mainWindow);
+	thread.launch();
+
+	//loop that handles logic and events
+	while (mainWindow.isOpen())
+	{
+		//handle any events in a state
+		currentState->handle_events(mainWindow, currEvent);
+
+		//Do state logic
+		currentState->logic();
+
+		//change state when needed
+		game.changeState(currentState, mainWindow);
+	}
 
 	return 0;
 }

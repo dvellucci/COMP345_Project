@@ -11,5 +11,5 @@ Player::~Player()
 
 void Player::doPlayerTurn()
 {
-
+	return;
 }

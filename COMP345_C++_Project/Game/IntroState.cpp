@@ -40,7 +40,7 @@ void IntroState::logic()
 
 }
 
-void IntroState::draw(sf::RenderWindow& window)
+void IntroState::draw(sf::RenderWindow* window)
 {
-	window.draw(m_titleSprite);
+	window->draw(m_titleSprite);
 }

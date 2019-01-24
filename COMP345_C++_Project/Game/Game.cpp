@@ -11,6 +11,7 @@ Game::~Game()
 {
 }
 
+/*
 void Game::start()
 {
 	//create the window and set the max fps
@@ -36,7 +37,6 @@ void Game::gameLoop()
 
 		changeState();
 
-		//Do state rendering
 		mainWindow.clear();
 		m_currentState->draw(mainWindow);
 		mainWindow.display();
@@ -63,6 +63,35 @@ void Game::changeState()
 			break;
 		case PLAYING:
 			m_currentState = std::make_unique<PlayingState>();
+			break;
+		case EXIT:
+			mainWindow.close();
+			break;
+		}
+	}
+}*/
+
+void Game::changeState(GameState*& m_currentState, sf::RenderWindow& mainWindow)
+{
+	auto nextState = m_currentState->getNextState();
+
+	//If the state needs to be changed
+	if (m_currentState->getNextState() != null) {
+		//Delete the current state
+		if (nextState != EXIT)
+		{
+			///TODO: FIND SOLUTION FOR THIS
+			//delete m_currentState;
+		}
+
+		//Change the state
+		switch (nextState)
+		{
+		case INTRO:
+			m_currentState = new IntroState();
+			break;
+		case PLAYING:
+			m_currentState = new PlayingState();
 			break;
 		case EXIT:
 			mainWindow.close();

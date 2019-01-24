@@ -19,7 +19,7 @@ public:
 	//Main loop functions
 	void handle_events(sf::RenderWindow& window, sf::Event& currEvent) override;
 	void logic() override;
-	void draw(sf::RenderWindow& window) override;
+	void draw(sf::RenderWindow* window) override;
 
 	//sets up the players and map
 	void setUpGame();

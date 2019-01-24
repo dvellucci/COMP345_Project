@@ -3,7 +3,8 @@
 PlayingState::PlayingState() : m_quit(false), m_playing(false)
 {
 	setUpGame();
-	std::cout << players.size() << " player game" << std::endl;
+
+	m_sprite.setTexture(ResourceHolder::Instance()->get(Textures::Title));
 	//might be usable
 	//if (m_image.getPixel(sf::Mouse::getPosition(window).x - m_sprite.getPosition().x, sf::Mouse::getPosition(window).y - m_sprite.getPosition().y).a > 0)
 }
@@ -47,14 +48,13 @@ void PlayingState::logic()
 		for (const auto &player : players)
 		{
 			player->doPlayerTurn();
-			//update map after a player's turn
 		}
 	}
 }
 
-void PlayingState::draw(sf::RenderWindow &window)
+void PlayingState::draw(sf::RenderWindow *window)
 {
-	
+	window->draw(m_sprite);
 }
 
 //sets up the players and starts the game
@@ -64,6 +64,8 @@ void PlayingState::setUpGame()
 	std::cout << "Enter number of players" << std::endl;
 
 	std::cin >> numOfPlayers;
+	std::cout << players.size() << " player game" << std::endl;
+
 	//initialize players
 	for (int i = 0; i < numOfPlayers; i++)
 	{
@@ -133,6 +135,7 @@ Map PlayingState::loadMap(std::string filename)
 	return map;
 }
 
+//parse the file with the region coordinates
 void PlayingState::loadRegionCoords(std::string filename)
 {
 	//open the file

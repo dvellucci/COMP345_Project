@@ -15,11 +15,13 @@ public:
 	void start();
 	void gameLoop();
 	void changeState();
+	void changeState(GameState*& m_currentState, sf::RenderWindow& mainWindow);
 
 private:
 
 	sf::RenderWindow mainWindow;
 	std::unique_ptr<GameState> m_currentState;
+	GameState* gamestate;
 
 };
 
