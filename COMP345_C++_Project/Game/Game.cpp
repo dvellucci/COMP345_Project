@@ -3,8 +3,8 @@
 Game::Game() 
 {
 	//load textures and fonts
-	ResourceHolder::Instance()->loadTexture(Textures::Title, "Textures/smallworld.jpg");
-	ResourceHolder::Instance()->loadFont(Fonts::Default, "Fonts/font.ttf");
+	ResourceHolder::Instance()->loadTexture(Textures::Title, "Textures/power_grid_cover.png");
+	ResourceHolder::Instance()->loadFont(Fonts::Default, "Fonts/hemmet.ttf");
 }
 
 Game::~Game() 

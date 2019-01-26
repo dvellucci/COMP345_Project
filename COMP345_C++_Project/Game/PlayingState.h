@@ -9,6 +9,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include "CharacterToken.h"
 
 class PlayingState : public GameState 
 {

@@ -47,14 +47,22 @@ void PlayingState::logic()
 		//make each player do their turn
 		for (const auto &player : players)
 		{
-			player->doPlayerTurn();
+			//player->doPlayerTurn();
+			player->firstConquer(m_map);
+			player->updatePlayerTokens(player->getOwnedRegions());
 		}
 	}
 }
 
 void PlayingState::draw(sf::RenderWindow *window)
 {
-	window->draw(m_sprite);
+	for (std::shared_ptr<Map::City> region : m_map.getCities()) 
+	{
+		if (region->m_tokenSprite) 
+		{
+			window->draw(*region->m_tokenSprite);
+		}
+	}
 }
 
 //sets up the players and starts the game
@@ -64,7 +72,6 @@ void PlayingState::setUpGame()
 	std::cout << "Enter number of players" << std::endl;
 
 	std::cin >> numOfPlayers;
-	std::cout << players.size() << " player game" << std::endl;
 
 	//initialize players
 	for (int i = 0; i < numOfPlayers; i++)
@@ -72,6 +79,8 @@ void PlayingState::setUpGame()
 		std::unique_ptr<Player> player = std::make_unique<Player>("player "+std::to_string(i+1));
 		players.push_back(std::move(player));
 	}
+
+	std::cout << players.size() << " player game" << std::endl;
 
 	//parse the map data and the set the coordinates of the regions
 	m_map = loadMap("Maps/2_player_map.txt");
@@ -110,7 +119,7 @@ Map PlayingState::loadMap(std::string filename)
 		getline(file, s1);
 
 		char regionType = s1.at(0);
-		map.setRegion(regionType);
+		map.setCity(regionType, regionNumber);
 
 		//look at the other regions connected to the current region
 		std::string number = "";
@@ -155,8 +164,9 @@ void PlayingState::loadRegionCoords(std::string filename)
 	while (!file.eof())
 	{
 		file >> x >> delimiter >> y;
-		m_map.getRegions()[regionNumber]->m_xPos = x;
-		m_map.getRegions()[regionNumber]->m_yPos = y;
+		m_map.getCities()[regionNumber]->m_xPos = x;
+		m_map.getCities()[regionNumber]->m_yPos = y;
 		regionNumber++;
 	}
 }
+

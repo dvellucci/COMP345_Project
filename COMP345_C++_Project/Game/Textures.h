@@ -1,6 +1,6 @@
 namespace Textures
 {
-	enum ID { Title, Map, Region, Token };
+	enum ID { Title, Map, City, Token, Character_1, Character_2 };
 }
 
 namespace Fonts

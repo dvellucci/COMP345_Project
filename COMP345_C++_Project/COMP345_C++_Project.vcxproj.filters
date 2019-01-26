@@ -36,10 +36,16 @@
     <ClCompile Include="Game\ResourceHolder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Dice.cpp">
+    <ClCompile Include="Game\GameState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameState.cpp">
+    <ClCompile Include="Game\CharacterToken.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameBoard\MapLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameBoard\Connection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,7 +80,13 @@
     <ClInclude Include="Game\ResourceHolder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Dice.h">
+    <ClInclude Include="Game\CharacterToken.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameBoard\MapLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameBoard\Connection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
