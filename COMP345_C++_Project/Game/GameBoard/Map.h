@@ -33,7 +33,7 @@ public:
 
 			int type;
 			float xPos, yPos;
-			std::unique_ptr<sf::Sprite> slotSprite;
+			std::unique_ptr<sf::Sprite> m_slotSprite;
 		};
 
 		CitySlot citySlots[SLOTS];
