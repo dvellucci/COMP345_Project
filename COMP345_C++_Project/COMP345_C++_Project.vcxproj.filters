@@ -42,10 +42,10 @@
     <ClCompile Include="Game\CharacterToken.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameBoard\MapLoader.cpp">
+    <ClCompile Include="Game\GameBoard\Connection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameBoard\Connection.cpp">
+    <ClCompile Include="Game\GameBoard\MapManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,10 +83,10 @@
     <ClInclude Include="Game\CharacterToken.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameBoard\MapLoader.h">
+    <ClInclude Include="Game\GameBoard\Connection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameBoard\Connection.h">
+    <ClInclude Include="Game\GameBoard\MapManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

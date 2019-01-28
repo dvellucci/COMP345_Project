@@ -10,6 +10,7 @@ MapManager::~MapManager()
 
 Map MapManager::loadMap(std::string filename)
 {
+
 	return Map();
 }
 

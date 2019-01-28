@@ -6,6 +6,7 @@
 #include "ResourceHolder.h"
 #include "Player.h"
 #include "GameBoard/Map.h"
+#include "GameBoard/MapManager.h"
 #include <vector>
 #include <fstream>
 #include <iostream>
@@ -35,6 +36,7 @@ private:
 	bool m_playing;
 	bool m_quit;
 
+	MapManager m_mapManager;
 	Map m_map;
 };
 

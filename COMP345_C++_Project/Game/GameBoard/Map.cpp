@@ -12,8 +12,8 @@ Map::~Map()
 void Map::setCity(int type, int cityNumber)
 {
 	//create the region and add it to the vector
-	std::shared_ptr<City> region = std::make_shared<City>(type, cityNumber);
-	m_cities.push_back(region);
+	std::shared_ptr<City> city = std::make_shared<City>(type, cityNumber);
+	m_cities.push_back(city);
 }
 
 void Map::setRegionCoords(int cityNumber, float x, float y)
