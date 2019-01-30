@@ -148,8 +148,8 @@
     <ClInclude Include="Game\GameBoard\Map.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\PlayingState.h" />
-    <ClInclude Include="Game\GameBoard\RegionTypes.h" />
     <ClInclude Include="Game\ResourceHolder.h" />
+    <ClInclude Include="Game\ResourceTypes.h" />
     <ClInclude Include="Game\Textures.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

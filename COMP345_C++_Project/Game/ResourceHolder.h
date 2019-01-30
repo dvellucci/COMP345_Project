@@ -4,6 +4,7 @@
 #include <map>
 #include <memory>
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 #include "Textures.h"
 

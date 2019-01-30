@@ -22,7 +22,6 @@ std::shared_ptr<Map> MapManager::loadMap(std::string filename)
 		std::cout << "That is an invalid file name." << std::endl;
 		return NULL;
 	}
-		
 
 	char delimiter = ',';
 	//store strings seperated by comma into the vector
@@ -41,10 +40,11 @@ std::shared_ptr<Map> MapManager::loadMap(std::string filename)
 
 		//the first string is the city name
 		m_map->setCity(fileStrings[0]);
+		//set slot sprite coordinates here
 
 		std::list<std::string> cityList;
 		//set the connections of the city
-		for (int i = 1; i < fileStrings.size(); i++)
+		for (size_t i = 1; i < fileStrings.size(); i++)
 		{
 			//create the connection between the 2 cities
 			int cost = stoi(fileStrings[i].substr(0, fileStrings[i].find('-')));

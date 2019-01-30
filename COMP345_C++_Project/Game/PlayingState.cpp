@@ -57,7 +57,18 @@ void PlayingState::logic()
 
 void PlayingState::draw(sf::RenderWindow *window)
 {
+	//draw the map
 	window->draw(m_mapManager->getMap()->getMapSprite());
+	//draw the houses the player has on the map
+	for (auto player : players) 
+	{
+		for (std::shared_ptr<Map::City> city : player->getOwnedCities())
+		{
+			window->draw(city->citySlots[0]->m_slotSprite);
+			window->draw(city->citySlots[1]->m_slotSprite);
+			window->draw(city->citySlots[2]->m_slotSprite);
+		}
+	}
 }
 
 //sets up the players and starts the game
@@ -73,12 +84,11 @@ void PlayingState::setUpGame()
 	{
 		//std::string playerSprite = "Player_" + std::to_string(i);
 		int tex = atoi("Player_" + i);
-		std::shared_ptr<Player> player = std::make_shared<Player>("player "+std::to_string(i+1));
-		
-		players.push_back(std::move(player));
+		std::shared_ptr<Player> player = std::make_shared<Player>("Player "+std::to_string(i+1));
+		players.push_back(player);
 	}
 
-	//set player power plant sprites
+	//set player house sprites
 	for (auto player : players) {
 
 	}

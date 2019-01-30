@@ -1,5 +1,4 @@
 #pragma once
-#include "RegionTypes.h"
 #include "../ResourceHolder.h"
 #include <SFML/Graphics.hpp>
 #include <string>
@@ -33,7 +32,7 @@ public:
 			int m_type;
 			float xPos, yPos;
 			bool m_isOwned = false;
-			std::unique_ptr<sf::Sprite> m_slotSprite;
+			sf::Sprite m_slotSprite;
 		};
 
 		std::shared_ptr<CitySlot> citySlots[SLOTS];

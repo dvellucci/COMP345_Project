@@ -22,7 +22,7 @@ public:
 	void setConnection(std::string city1, std::string city2, int cost);
 	void DFSUtil(std::string city, bool visitied[]);
 
-	std::shared_ptr<Map> getMap() { return m_map; }
+	std::shared_ptr<Map>& getMap() { return m_map; }
 	std::map<std::string, std::list<std::string>> getMapGraph() { return m_mapGraph; }
 	std::vector<std::shared_ptr<Connection>> getConnections() { return m_connections; }
 	std::vector<std::string> getAvailableMaps() { return m_avaliableMaps; }
