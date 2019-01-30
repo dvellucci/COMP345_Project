@@ -1,7 +1,10 @@
 #include "PlayingState.h"
 
+std::string mapFile;
+
 PlayingState::PlayingState() : m_quit(false), m_playing(false)
 {
+	m_mapManager = std::make_shared<MapManager>();
 	setUpGame();
 
 	m_sprite.setTexture(ResourceHolder::Instance()->get(Textures::Title));
@@ -47,20 +50,23 @@ void PlayingState::logic()
 		//make each player do their turn
 		for (const auto &player : players)
 		{
-			//player->doPlayerTurn();
-			player->firstConquer(m_map);
-			player->updatePlayerTokens(player->getOwnedRegions());
+		
 		}
 	}
 }
 
 void PlayingState::draw(sf::RenderWindow *window)
 {
-	for (std::shared_ptr<Map::City> region : m_map.getCities()) 
+	//draw the map
+	window->draw(m_mapManager->getMap()->getMapSprite());
+	//draw the houses the player has on the map
+	for (auto player : players) 
 	{
-		if (region->m_tokenSprite) 
+		for (std::shared_ptr<Map::City> city : player->getOwnedCities())
 		{
-			window->draw(*region->m_tokenSprite);
+			window->draw(city->citySlots[0]->m_slotSprite);
+			window->draw(city->citySlots[1]->m_slotSprite);
+			window->draw(city->citySlots[2]->m_slotSprite);
 		}
 	}
 }
@@ -74,99 +80,46 @@ void PlayingState::setUpGame()
 	std::cin >> numOfPlayers;
 
 	//initialize players
-	for (int i = 0; i < numOfPlayers; i++)
+	for (int i = 1; i <= numOfPlayers; i++)
 	{
-		std::unique_ptr<Player> player = std::make_unique<Player>("player "+std::to_string(i+1));
-		players.push_back(std::move(player));
+		//std::string playerSprite = "Player_" + std::to_string(i);
+		int tex = atoi("Player_" + i);
+		std::shared_ptr<Player> player = std::make_shared<Player>("Player "+std::to_string(i+1));
+		players.push_back(player);
+	}
+
+	//set player house sprites
+	for (auto player : players) {
+
 	}
 
 	std::cout << players.size() << " player game" << std::endl;
+	std::cout << std::endl;
+
+	//show available maps
+	std::cout << "Available maps: " << std::endl;
+	for (int i = 0; i < m_mapManager->getAvailableMaps().size(); i++)
+	{
+		std::cout << i+1 << ". " << m_mapManager->getAvailableMaps()[i] << std::endl;
+	}
+
+	//load the map the players want
+	std::cout << "Enter the name of the map to play" << std::endl;
+	std::cin >> mapFile;
 
 	//parse the map data and the set the coordinates of the regions
-	m_map = loadMap("Maps/2_player_map.txt");
-	loadRegionCoords("Maps/2_player_map_coords.txt");
+	std::transform(mapFile.begin(), mapFile.end(), mapFile.begin(), ::tolower);
+	m_mapManager->loadMap("Maps/" + mapFile + ".txt");
+
+	//load map texture
+	ResourceHolder::Instance()->loadTexture(Textures::Map, "Textures/Maps/" + mapFile + ".png");
+	//global vars to be used for window size
+	//mapWidth = ResourceHolder::Instance()->get(Textures::Map).getSize().x;
+	//mapHeight = ResourceHolder::Instance()->get(Textures::Map).getSize().y;
+	//set the map sprite 
+	m_mapManager->getMap()->setMapSprite();
 
 	std::cout << "Press enter to play the game or escape to quit" << std::endl;
 }
 
-//parse the file
-Map PlayingState::loadMap(std::string filename)
-{	
-	//open the file
-	std::ifstream file;
-	try {
-		file.open(filename);
-	}
-	catch (...)
-	{
-		std::cout << "Failed to open file " + filename + "." << std::endl;
-	}
-
-	//first line is number of regions
-	std::string s;
-	getline(file, s);
-
-	//create the map
-	Map map;
-
-	char delimiter = ',';
-	//this keeps track of which region we are at in the text file 
-	int regionNumber = 1;
-	//lines are seperated by regions
-	while (!file.eof())
-	{
-		std::string s1;
-		getline(file, s1);
-
-		char regionType = s1.at(0);
-		map.setCity(regionType, regionNumber);
-
-		//look at the other regions connected to the current region
-		std::string number = "";
-		for (int i = 4; i < s1.length(); i++)
-		{
-			if (s1.at(i) == delimiter)
-			{
-				//add an edge between the currennt region and it's adjacent regions
-				int adjacentRegion = std::stoi(number);
-				map.addEdge(regionNumber, adjacentRegion);
-				number = "";
-				continue;
-			}
-			number += s1.at(i);
-		}
-		
-		//go to the next region (the next line) in the text file
-		regionNumber++;
-	}
-	
-	file.close();
-	return map;
-}
-
-//parse the file with the region coordinates
-void PlayingState::loadRegionCoords(std::string filename)
-{
-	//open the file
-	std::ifstream file;
-	try {
-		file.open(filename);
-	}
-	catch (...)
-	{
-		std::cout << "Failed to open file " + filename + "." << std::endl;
-	}
-
-	char delimiter = ',';
-	float x, y;
-	//this keeps track of which region we are at in the text file (line 3 = region 3)
-	int regionNumber = 0;
-	while (!file.eof())
-	{
-		file >> x >> delimiter >> y;
-		m_map.getCities()[regionNumber]->m_xPos = x;
-		m_map.getCities()[regionNumber]->m_yPos = y;
-		regionNumber++;
-	}
-}
 

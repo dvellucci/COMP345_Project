@@ -10,7 +10,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
-#include "CharacterToken.h"
+#include <locale> 
 
 class PlayingState : public GameState 
 {
@@ -26,18 +26,14 @@ public:
 	//sets up the players and map
 	void setUpGame();
 
-	//parses map data from a text file
-	Map loadMap(std::string filename);
-	void loadRegionCoords(std::string filename);
-
 private:
 	sf::Sprite m_sprite;
-	std::vector<std::unique_ptr<Player>> players;
+	std::vector<std::shared_ptr<Player>> players;
 	bool m_playing;
 	bool m_quit;
 
-	MapManager m_mapManager;
-	Map m_map;
+	std::shared_ptr<MapManager> m_mapManager;
+
 };
 
 #endif

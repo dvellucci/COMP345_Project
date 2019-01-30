@@ -39,9 +39,6 @@
     <ClCompile Include="Game\GameState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game\CharacterToken.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameBoard\Connection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -71,22 +68,19 @@
     <ClInclude Include="Game\GameBoard\Map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameBoard\RegionTypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Game\ResourceHolder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game\CharacterToken.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameBoard\Connection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameBoard\MapManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ResourceTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -127,7 +127,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Game\CharacterToken.cpp" />
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Game\GameBoard\Connection.cpp" />
     <ClCompile Include="Game\GameBoard\Map.cpp" />
@@ -140,7 +139,6 @@
     <ClCompile Include="Game\ResourceHolder.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game\CharacterToken.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\GameBoard\Connection.h" />
     <ClInclude Include="Game\GameBoard\MapManager.h" />
@@ -150,8 +148,8 @@
     <ClInclude Include="Game\GameBoard\Map.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\PlayingState.h" />
-    <ClInclude Include="Game\GameBoard\RegionTypes.h" />
     <ClInclude Include="Game\ResourceHolder.h" />
+    <ClInclude Include="Game\ResourceTypes.h" />
     <ClInclude Include="Game\Textures.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

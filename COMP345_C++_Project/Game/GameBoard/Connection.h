@@ -4,13 +4,16 @@
 class Connection
 {
 public:
-	Connection();
-	Connection(std::shared_ptr<Map::City> firstCity,
-		std::shared_ptr<Map::City> secondCity, int cost);
+	Connection(std::string firstCity,
+		std::string secondCity, int cost);
 	~Connection();
 
+	std::string& getFirst() { return m_first; }
+	std::string& getSecond() { return m_second; }
+	int getCost() { return m_cost; }
+
 private:
-	std::shared_ptr<Map::City> m_first;
-	std::shared_ptr<Map::City> m_second;
+	std::string m_first;
+	std::string m_second;
 	int m_cost;
 };

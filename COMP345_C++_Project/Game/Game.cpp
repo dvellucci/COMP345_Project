@@ -5,6 +5,14 @@ Game::Game()
 	//load textures and fonts
 	ResourceHolder::Instance()->loadTexture(Textures::Title, "Textures/power_grid_cover.png");
 	ResourceHolder::Instance()->loadFont(Fonts::Default, "Fonts/hemmet.ttf");
+
+	//load player sprites
+	ResourceHolder::Instance()->loadTexture(Textures::Player_1, "Textures/Houses/player1house.png");
+	ResourceHolder::Instance()->loadTexture(Textures::Player_2, "Textures/Houses/player2house.png");
+	ResourceHolder::Instance()->loadTexture(Textures::Player_3, "Textures/Houses/player3house.png");
+	ResourceHolder::Instance()->loadTexture(Textures::Player_4, "Textures/Houses/player4house.png");
+	ResourceHolder::Instance()->loadTexture(Textures::Player_5, "Textures/Houses/player5house.png");
+	ResourceHolder::Instance()->loadTexture(Textures::Player_6, "Textures/Houses/player6house.png");
 }
 
 Game::~Game() 
