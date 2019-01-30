@@ -2,6 +2,9 @@
 
 GameState *currentState = NULL;
 
+int mapWidth = 1700;
+int mapHeight = 750;
+
 //the render function that will run on a seperate thread
 void renderingThread(sf::RenderWindow*& window)
 {
@@ -21,7 +24,7 @@ void renderingThread(sf::RenderWindow*& window)
 int main()
 {
 	sf::RenderWindow mainWindow;
-	mainWindow.create(sf::VideoMode(1200, 800, 32), "COMP 345", sf::Style::Titlebar | sf::Style::Close);
+	mainWindow.create(sf::VideoMode(mapWidth, mapHeight, 32), "COMP 345", sf::Style::Titlebar | sf::Style::Close);
 	mainWindow.setFramerateLimit(30);
 
 	Game game;
