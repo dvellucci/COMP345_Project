@@ -33,7 +33,6 @@ int main()
 	sf::Event currEvent;
 	auto stateID = GameStates::PLAYING;
 	currentState = new IntroState();
-
 	
 	//start the thread that will do the rendering
 	mainWindow.setActive(false);

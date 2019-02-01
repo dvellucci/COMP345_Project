@@ -38,13 +38,22 @@ std::shared_ptr<Map> MapManager::loadMap(std::string filename)
 			fileStrings.push_back(str);
 		}
 
+		//get city slot coordinates
+		float x1 = stof(fileStrings[1].substr(0, fileStrings[1].find('-')));
+		float y1 = stof(fileStrings[1].substr(fileStrings[1].find('-') + 1));
+
+		float x2 = stof(fileStrings[2].substr(0, fileStrings[2].find('-')));
+		float y2 = stof(fileStrings[2].substr(fileStrings[2].find('-') + 1));
+
+		float x3 = stof(fileStrings[3].substr(0, fileStrings[3].find('-')));
+		float y3 = stof(fileStrings[3].substr(fileStrings[3].find('-') + 1));
+
 		//the first string is the city name
-		m_map->setCity(fileStrings[0]);
-		//set slot sprite coordinates here
+		m_map->setCity(fileStrings[0], x1, y1, x2, y2, x3, y3);
 
 		std::list<std::string> cityList;
 		//set the connections of the city
-		for (size_t i = 1; i < fileStrings.size(); i++)
+		for (size_t i = 4; i < fileStrings.size(); i++)
 		{
 			//create the connection between the 2 cities
 			int cost = stoi(fileStrings[i].substr(0, fileStrings[i].find('-')));

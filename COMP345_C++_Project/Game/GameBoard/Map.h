@@ -19,17 +19,17 @@ public:
 	~Map();
 
 	struct City {
-		City(std::string cityName);
+		City(std::string m_cityName);
 		~City();
 
 		std::string m_cityName;
-		std::unique_ptr<sf::Sprite> m_tokenSprite;
 
 		struct CitySlot {
-			CitySlot(int type) { m_type = type; };
+			CitySlot(int type, std::string name) : m_type(type), m_name(name) { };
 			~CitySlot() {};
 
 			int m_type;
+			std::string m_name;
 			float xPos, yPos;
 			bool m_isOwned = false;
 			sf::Sprite m_slotSprite;
@@ -39,12 +39,12 @@ public:
 	};
 
 	void setMapSprite();
-	void setCity(std::string cityName);
-	void setRegionCoords(int regionNumber, float x, float y);
+	void setCity(std::string m_cityName, float x1, float y1, float x2, float y2, float x3, float y3);
 	void addEdge(int count, int val);
 
 	std::vector<std::shared_ptr<City>>& getCities() { return m_cities; }
 	sf::Sprite& getMapSprite() { return m_mapSprite; }
+	sf::Text& getCityText() { return m_cityText; }
 
 private:
 	std::vector<std::shared_ptr<City>> m_cities;
@@ -52,4 +52,5 @@ private:
 	//this keeps track of the edges between regions that are connected
 	int m_edges[EDGES][EDGES] = { 0 };
 	sf::Sprite m_mapSprite;
+	sf::Text m_cityText;
 };

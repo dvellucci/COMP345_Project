@@ -14,7 +14,7 @@ PlayingState::PlayingState() : m_quit(false), m_playing(false)
 
 PlayingState::~PlayingState()
 {
-	//players.clear();
+	
 }
 
 void PlayingState::handle_events(sf::RenderWindow & window, sf::Event & currEvent)
@@ -33,6 +33,20 @@ void PlayingState::handle_events(sf::RenderWindow & window, sf::Event & currEven
 				m_playing = true;
 			}
 			break;
+		case sf::Event::MouseButtonReleased:
+			//show the name of a city by clicking on the first slot
+			if (currEvent.type == sf::Event::MouseButtonReleased)
+			{
+				for (auto& city : m_mapManager->getMap()->getCities())
+				{
+					if (city->citySlots[0]->m_slotSprite.getGlobalBounds().contains((float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y))
+					{
+						std::cout << city->citySlots[0]->m_name << std::endl;
+						m_mapManager->getMap()->getCityText().setString(city->citySlots[0]->m_name);
+					}
+				}
+			}
+		break;
 		}
 	}
 }
@@ -69,6 +83,7 @@ void PlayingState::draw(sf::RenderWindow *window)
 			window->draw(city->citySlots[2]->m_slotSprite);
 		}
 	}
+	window->draw(m_mapManager->getMap()->getCityText());
 }
 
 //sets up the players and starts the game
