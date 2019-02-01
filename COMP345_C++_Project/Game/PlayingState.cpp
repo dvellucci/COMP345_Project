@@ -1,5 +1,6 @@
 #include "PlayingState.h"
 
+//globals
 std::string mapFile;
 
 PlayingState::PlayingState() : m_quit(false), m_playing(false)
@@ -17,7 +18,7 @@ PlayingState::~PlayingState()
 	
 }
 
-void PlayingState::handle_events(sf::RenderWindow & window, sf::Event & currEvent)
+void PlayingState::handle_events(sf::RenderWindow& window, sf::Event & currEvent)
 {
 	while (window.pollEvent(currEvent))
 	{
@@ -26,7 +27,7 @@ void PlayingState::handle_events(sf::RenderWindow & window, sf::Event & currEven
 		case sf::Event::KeyPressed:
 			if (currEvent.key.code == sf::Keyboard::Escape)
 			{
-				setNextState(GameStates::EXIT);
+				m_quit = true;
 			}
 			else if (currEvent.key.code == sf::Keyboard::Return)
 			{
@@ -41,7 +42,7 @@ void PlayingState::handle_events(sf::RenderWindow & window, sf::Event & currEven
 				{
 					if (city->citySlots[0]->m_slotSprite.getGlobalBounds().contains((float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y))
 					{
-						std::cout << city->citySlots[0]->m_name << std::endl;
+						city->citySlots[0]->m_name[0] = toupper(city->citySlots[0]->m_name[0]);
 						m_mapManager->getMap()->getCityText().setString(city->citySlots[0]->m_name);
 					}
 				}
@@ -76,7 +77,7 @@ void PlayingState::draw(sf::RenderWindow *window)
 	//draw the houses the player has on the map
 	for (auto player : players) 
 	{
-		for (std::shared_ptr<Map::City> city : player->getOwnedCities())
+		for (auto& city : player->getOwnedCities())
 		{
 			window->draw(city->citySlots[0]->m_slotSprite);
 			window->draw(city->citySlots[1]->m_slotSprite);
@@ -119,15 +120,17 @@ void PlayingState::setUpGame()
 	}
 
 	//load the map the players want
-	std::cout << "Enter the name of the map to play" << std::endl;
-	std::cin >> mapFile;
+	int mapNum = 0;
+	std::cout << "Enter the number of the map to play" << std::endl;
+	std::cin >> mapNum;
 
 	//parse the map data and the set the coordinates of the regions
-	std::transform(mapFile.begin(), mapFile.end(), mapFile.begin(), ::tolower);
-	m_mapManager->loadMap("Maps/" + mapFile + ".txt");
+	std::string mapStr = m_mapManager->getAvailableMaps()[mapNum - 1];
+	std::transform(mapStr.begin(), mapStr.end(), mapStr.begin(), ::tolower);
+	m_mapManager->loadMap("Maps/" + mapStr + ".txt");
 
 	//load map texture
-	ResourceHolder::Instance()->loadTexture(Textures::Map, "Textures/Maps/" + mapFile + ".png");
+	ResourceHolder::Instance()->loadTexture(Textures::Map, "Textures/Maps/" + mapStr + ".png");
 	//global vars to be used for window size
 	//mapWidth = ResourceHolder::Instance()->get(Textures::Map).getSize().x;
 	//mapHeight = ResourceHolder::Instance()->get(Textures::Map).getSize().y;

@@ -5,6 +5,7 @@ Map::Map()
 	m_cityText.setFont(ResourceHolder::Instance()->get(Fonts::Default));
 	m_cityText.setFillColor(sf::Color::Black);
 	m_cityText.setPosition(250.0f, 30.0f);
+	m_cityText.setStyle(sf::Text::Bold);
 }
 
 Map::~Map()
@@ -36,19 +37,4 @@ void Map::setCity(std::string m_cityName, float x1, float y1, float x2, float y2
 	city->citySlots[2]->m_slotSprite.setPosition(x3, y3);
 
 	m_cities.push_back(city);
-}
-
-void Map::addEdge(int city1, int city2)
-{
-	m_edges[city1][city2] = 1;
-	m_edges[city2][city1] = 1;
-}
-
-Map::City::City(std::string m_cityName) 
-{
-	m_cityName = m_cityName;
-}
-
-Map::City::~City()
-{
 }

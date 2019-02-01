@@ -52,7 +52,7 @@ std::shared_ptr<Map> MapManager::loadMap(std::string filename)
 		m_map->setCity(fileStrings[0], x1, y1, x2, y2, x3, y3);
 
 		std::list<std::string> cityList;
-		//set the connections of the city
+		//set the connections of the city which start at the 4th index of the string read from the file
 		for (size_t i = 4; i < fileStrings.size(); i++)
 		{
 			//create the connection between the 2 cities
@@ -71,9 +71,6 @@ std::shared_ptr<Map> MapManager::loadMap(std::string filename)
 	return m_map;
 }
 
-void MapManager::loadCityCoords(std::string filename)
-{
-}
 
 void MapManager::setConnection(std::string city1, std::string city2, int cost)
 {

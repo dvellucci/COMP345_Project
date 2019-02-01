@@ -11,6 +11,8 @@
 #include <fstream>
 #include <iostream>
 #include <locale> 
+#include <string>
+#include <cctype>
 
 class PlayingState : public GameState 
 {

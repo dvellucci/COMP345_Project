@@ -1,7 +1,6 @@
 #include "game.h"
 
 GameState *currentState = NULL;
-
 int mapWidth = 1700;
 int mapHeight = 750;
 
