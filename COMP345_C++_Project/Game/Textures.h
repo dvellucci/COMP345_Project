@@ -9,5 +9,5 @@ namespace Fonts
 }
 
 extern std::string mapFile;
-extern int mapWidth;
-extern int mapHeight;
+extern float mapWidth;
+extern float mapHeight;

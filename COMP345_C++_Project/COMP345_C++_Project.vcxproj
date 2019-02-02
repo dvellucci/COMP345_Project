@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -132,11 +132,13 @@
     <ClCompile Include="Game\GameBoard\Map.cpp" />
     <ClCompile Include="Game\GameBoard\MapManager.cpp" />
     <ClCompile Include="Game\GameState.cpp" />
+    <ClCompile Include="Game\GridResource.cpp" />
     <ClCompile Include="Game\IntroState.cpp" />
     <ClCompile Include="Game\main.cpp" />
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Game\PlayingState.cpp" />
     <ClCompile Include="Game\ResourceHolder.cpp" />
+    <ClCompile Include="Game\GridResourceMarket.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Game.h" />
@@ -149,7 +151,8 @@
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\PlayingState.h" />
     <ClInclude Include="Game\ResourceHolder.h" />
-    <ClInclude Include="Game\ResourceTypes.h" />
+    <ClInclude Include="Game\GridResource.h" />
+    <ClInclude Include="Game\GridResourceMarket.h" />
     <ClInclude Include="Game\Textures.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

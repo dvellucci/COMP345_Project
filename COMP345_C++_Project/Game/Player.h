@@ -14,10 +14,10 @@ public:
 	void doPlayerTurn();
 	bool getQuit() { return m_quit; }
 	std::string getPlayerName() { return m_playerName; }
-	std::vector<std::shared_ptr<Map::City>>& getOwnedCities() { return m_ownedCities; }
+	std::vector<std::shared_ptr<Map::City::CitySlot>>& getOwnedCities() { return m_ownedCitySlots; }
 
 private:
-	std::vector<std::shared_ptr<Map::City>> m_ownedCities;
+	std::vector<std::shared_ptr<Map::City::CitySlot>> m_ownedCitySlots;
 	std::string m_playerName;
 	sf::Sprite m_playerSprite;
 	int m_houses;

@@ -9,7 +9,6 @@
 #include <list>
 #include <map>
 
-#define EDGES 100
 #define SLOTS 3
 class Map
 {

@@ -77,11 +77,9 @@ void PlayingState::draw(sf::RenderWindow *window)
 	//draw the houses the player has on the map
 	for (auto player : players) 
 	{
-		for (auto& city : player->getOwnedCities())
+		for (auto& citySlot : player->getOwnedCities())
 		{
-			window->draw(city->citySlots[0]->m_slotSprite);
-			window->draw(city->citySlots[1]->m_slotSprite);
-			window->draw(city->citySlots[2]->m_slotSprite);
+			window->draw(citySlot->m_slotSprite);
 		}
 	}
 	window->draw(m_mapManager->getMap()->getCityText());
@@ -114,7 +112,7 @@ void PlayingState::setUpGame()
 
 	//show available maps
 	std::cout << "Available maps: " << std::endl;
-	for (int i = 0; i < m_mapManager->getAvailableMaps().size(); i++)
+	for (size_t i = 0; i < m_mapManager->getAvailableMaps().size(); i++)
 	{
 		std::cout << i+1 << ". " << m_mapManager->getAvailableMaps()[i] << std::endl;
 	}
