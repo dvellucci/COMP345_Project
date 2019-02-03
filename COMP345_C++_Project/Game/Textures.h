@@ -1,6 +1,6 @@
 namespace Textures
 {
-	enum ID { Title, Default, Map, City, Token, Player_1, Player_2, Player_3, Player_4, Player_5, Player_6 };
+	enum ID { Title, Default, Map, City, Token, Player_1, Player_2, Player_3, Player_4, Player_5, Player_6, Coal, Oil, Garbage, Uranium};
 }
 
 namespace Fonts
@@ -9,5 +9,5 @@ namespace Fonts
 }
 
 extern std::string mapFile;
-extern float mapWidth;
-extern float mapHeight;
+extern unsigned int mapWidth;
+extern unsigned int mapHeight;

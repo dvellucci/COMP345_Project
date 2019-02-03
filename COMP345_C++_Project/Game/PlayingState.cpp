@@ -5,10 +5,16 @@ std::string mapFile;
 
 PlayingState::PlayingState() : m_quit(false), m_playing(false)
 {
+	//instantiate the map manager and resouce market
 	m_mapManager = std::make_shared<MapManager>();
+	m_gridResourceMarket = std::make_shared<GridResourceMarket>();
+
+	//create the resources
+	m_gridResourceMarket->createCoalResources();
+
+	//set up the number of players and the map that will be played
 	setUpGame();
 
-	m_sprite.setTexture(ResourceHolder::Instance()->get(Textures::Title));
 	//might be usable
 	//if (m_image.getPixel(sf::Mouse::getPosition(window).x - m_sprite.getPosition().x, sf::Mouse::getPosition(window).y - m_sprite.getPosition().y).a > 0)
 }
@@ -82,6 +88,13 @@ void PlayingState::draw(sf::RenderWindow *window)
 			window->draw(citySlot->m_slotSprite);
 		}
 	}
+
+	for (auto resource : m_gridResourceMarket->getCoalResources())
+	{
+		if(resource->getIsAvailable())
+			window->draw(resource->getResourceSprite());
+	}
+
 	window->draw(m_mapManager->getMap()->getCityText());
 }
 
@@ -126,14 +139,13 @@ void PlayingState::setUpGame()
 	std::string mapStr = m_mapManager->getAvailableMaps()[mapNum - 1];
 	std::transform(mapStr.begin(), mapStr.end(), mapStr.begin(), ::tolower);
 	m_mapManager->loadMap("Maps/" + mapStr + ".txt");
-
 	//load map texture
 	ResourceHolder::Instance()->loadTexture(Textures::Map, "Textures/Maps/" + mapStr + ".png");
-	//global vars to be used for window size
-	//mapWidth = ResourceHolder::Instance()->get(Textures::Map).getSize().x;
-	//mapHeight = ResourceHolder::Instance()->get(Textures::Map).getSize().y;
 	//set the map sprite 
 	m_mapManager->getMap()->setMapSprite();
+
+	//load data for resource market from file
+	m_gridResourceMarket->loadMarketResource("Maps/" + mapStr + "ResourceCoords.txt");
 
 	std::cout << "Press enter to play the game or escape to quit" << std::endl;
 }

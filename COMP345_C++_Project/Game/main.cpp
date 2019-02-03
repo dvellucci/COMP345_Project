@@ -1,8 +1,8 @@
 #include "game.h"
 
 GameState *currentState = NULL;
-float mapWidth = 1700;
-float mapHeight = 750;
+unsigned int mapWidth = 1700;
+unsigned int mapHeight = 1231;
 
 //the render function that will run on a seperate thread
 void renderingThread(sf::RenderWindow*& window)

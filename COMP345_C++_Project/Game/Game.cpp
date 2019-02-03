@@ -14,6 +14,10 @@ Game::Game()
 	ResourceHolder::Instance()->loadTexture(Textures::Player_4, "Textures/Houses/player4house.png");
 	ResourceHolder::Instance()->loadTexture(Textures::Player_5, "Textures/Houses/player5house.png");
 	ResourceHolder::Instance()->loadTexture(Textures::Player_6, "Textures/Houses/player6house.png");
+	ResourceHolder::Instance()->loadTexture(Textures::Coal, "Textures/Resources/coal.png");
+	ResourceHolder::Instance()->loadTexture(Textures::Oil, "Textures/Resources/oil.png");
+	ResourceHolder::Instance()->loadTexture(Textures::Garbage, "Textures/Resources/garbage.png");
+	ResourceHolder::Instance()->loadTexture(Textures::Uranium, "Textures/Resources/uranium.png");
 }
 
 Game::~Game() 

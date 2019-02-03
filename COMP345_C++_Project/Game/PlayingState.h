@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "GameBoard/Map.h"
 #include "GameBoard/MapManager.h"
+#include "GridResourceMarket.h"
 #include <vector>
 #include <fstream>
 #include <iostream>
@@ -29,12 +30,12 @@ public:
 	void setUpGame();
 
 private:
-	sf::Sprite m_sprite;
 	std::vector<std::shared_ptr<Player>> players;
 	bool m_playing;
 	bool m_quit;
 
 	std::shared_ptr<MapManager> m_mapManager;
+	std::shared_ptr<GridResourceMarket> m_gridResourceMarket;
 
 };
 
