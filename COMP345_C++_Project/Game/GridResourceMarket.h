@@ -17,10 +17,17 @@ public:
 	GridResourceMarket();
 	~GridResourceMarket();
 
+	void setResourceMarket();
 	void createCoalResources();
+	void createOilResources();
+	void createGarbageResources();
+	void createUraniumResources();
+
+	void drawResourceMarket(sf::RenderWindow *&mainWindow);
 
 	void loadMarketResource(std::string filename);
 	std::vector<std::shared_ptr<GridResource>>& getCoalResources() { return m_coalResources; }
+	std::vector<std::shared_ptr<GridResource>>& getOilResources() { return m_oilResources; }
 
 private:
 	std::vector<std::shared_ptr<GridResource>> m_coalResources;

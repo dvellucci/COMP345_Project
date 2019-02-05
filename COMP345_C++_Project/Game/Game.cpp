@@ -1,5 +1,8 @@
 #include "Game.h"
 
+unsigned int mapWidth = 1700;
+unsigned int mapHeight = 1231;
+
 Game::Game() 
 {
 	//load fonts
@@ -22,14 +25,19 @@ Game::Game()
 
 Game::~Game() 
 {
+	delete m_currentState;
+	delete mainWindow;
 }
 
-/*
+
 void Game::start()
 {
 	//create the window and set the max fps
-	mainWindow.create(sf::VideoMode(1200, 800, 32), "COMP 345", sf::Style::Titlebar | sf::Style::Close);
-	mainWindow.setFramerateLimit(60);
+	mainWindow = new sf::RenderWindow();
+	mainWindow->create(sf::VideoMode(mapWidth, mapHeight, 32), "COMP 345", sf::Style::Titlebar | sf::Style::Close);
+	mainWindow->setFramerateLimit(30);
+
+	//run the main game loop
 	gameLoop();
 }
 
@@ -38,51 +46,28 @@ void Game::gameLoop()
 	sf::Event currEvent;
 
 	auto stateID = GameStates::PLAYING;
-	m_currentState = std::make_unique<IntroState>();
+	m_currentState = new IntroState();
 
-	while (mainWindow.isOpen())
+	//start the thread that will do the rendering
+	mainWindow->setActive(false);
+	sf::Thread thread(&Game::renderingThread, this);
+	thread.launch();
+
+	//start the thread that will do the game logic
+	mainWindow->setActive(false);
+	sf::Thread thread2(&Game::logicThread, this);
+	thread2.launch();
+
+	//loop to handle events
+	while (mainWindow->isOpen())
 	{
 		//handle any events in a state
 		m_currentState->handle_events(mainWindow, currEvent);
 
-		//Do state logic
-		m_currentState->logic();
-
-		changeState();
-
-		mainWindow.clear();
-		m_currentState->draw(mainWindow);
-		mainWindow.display();
+		//change state when needed
+		changeState(m_currentState, *mainWindow);
 	}
 }
-
-void Game::changeState()
-{
-	auto nextState = m_currentState->getNextState();
-
-	//If the state needs to be changed
-	if (m_currentState->getNextState() != null) {
-		//Delete the current state
-		if (nextState != EXIT)
-		{
-			m_currentState.reset();
-		}
-
-		//Change the state
-		switch (nextState)
-		{
-		case INTRO:
-			m_currentState = std::make_unique<IntroState>();
-			break;
-		case PLAYING:
-			m_currentState = std::make_unique<PlayingState>();
-			break;
-		case EXIT:
-			mainWindow.close();
-			break;
-		}
-	}
-}*/
 
 void Game::changeState(GameState*& m_currentState, sf::RenderWindow& mainWindow)
 {
@@ -112,3 +97,26 @@ void Game::changeState(GameState*& m_currentState, sf::RenderWindow& mainWindow)
 		}
 	}
 }
+
+void Game::renderingThread()
+{
+	// activate the window's context
+	mainWindow->setActive(true);
+
+	// the rendering loop
+	while (mainWindow->isOpen())
+	{
+		mainWindow->clear();
+		m_currentState->draw(mainWindow);
+		mainWindow->display();
+	}
+}
+
+void Game::logicThread()
+{
+	while (mainWindow->isOpen())
+	{
+		m_currentState->logic();
+	}
+}
+

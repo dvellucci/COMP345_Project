@@ -229,7 +229,7 @@ int MapManager::getShortestPathFromPlayer(std::shared_ptr<Player> player, std::s
 
 	int minCost = getShortestPath(player->getOwnedCities()[0]->m_name, toCity);
 
-	for (int i = 1; i < player->getOwnedCities().size(); i++)
+	for (size_t i = 1; i < player->getOwnedCities().size(); i++)
 	{
 		int pathCost = getShortestPath(player->getOwnedCities()[i]->m_name, toCity);
 		if (minCost > pathCost)
