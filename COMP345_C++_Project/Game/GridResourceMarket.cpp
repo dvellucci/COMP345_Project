@@ -2,7 +2,10 @@
 
 GridResourceMarket::GridResourceMarket()
 {
-	//m_coalResources.reserve(24);
+	m_coalResources.reserve(24);
+	m_oilResources.reserve(24);
+	m_garbageResources.reserve(24);
+	m_uraniumResources.reserve(12);
 }
 
 GridResourceMarket::~GridResourceMarket()
@@ -10,6 +13,7 @@ GridResourceMarket::~GridResourceMarket()
 
 }
 
+//load the coordinates of the resource sprites from the text file
 void GridResourceMarket::loadMarketResource(std::string filename)
 {
 	std::ifstream file;
@@ -35,17 +39,75 @@ void GridResourceMarket::loadMarketResource(std::string filename)
 			fileStrings.push_back(str);
 		}
 
+		//set coal sprite positions
 		for (size_t i = 0; i < fileStrings.size(); i++)
 		{
 			float x = stof(fileStrings[i].substr(0, fileStrings[i].find('-')));
 			float y = stof(fileStrings[i].substr(fileStrings[i].find('-') + 1));
 			m_coalResources[i]->getResourceSprite().setPosition(x, y);
 		}
+		str.clear();
+		fileStrings.clear();
+
+		//get the next line of the file which are coordinates for oil
+		getline(file, str);
+		std::stringstream stream2(str);
+		//split the string from the text file and put those strings in a vector
+		while (getline(stream2, str, delimiter))
+		{
+			fileStrings.push_back(str);
+		}
+
+		//set oil sprite positions
+		for (size_t i = 0; i < fileStrings.size(); i++)
+		{
+			float x = stof(fileStrings[i].substr(0, fileStrings[i].find('-')));
+			float y = stof(fileStrings[i].substr(fileStrings[i].find('-') + 1));
+			
+		}
+		str.clear();
+		fileStrings.clear();
+
+		//get the next line of the file which are coordinates for garbage
+		getline(file, str);
+		std::stringstream stream3(str);
+		//split the string from the text file and put those strings in a vector
+		while (getline(stream3, str, delimiter))
+		{
+			fileStrings.push_back(str);
+		}
+
+		//set garbage sprite positions
+		for (size_t i = 0; i < fileStrings.size(); i++)
+		{
+			float x = stof(fileStrings[i].substr(0, fileStrings[i].find('-')));
+			float y = stof(fileStrings[i].substr(fileStrings[i].find('-') + 1));
+
+		}
+		str.clear();
+		fileStrings.clear();
+
+		//get the next line of the file which are coordinates for uranium
+		getline(file, str);
+		std::stringstream stream4(str);
+		//split the string from the text file and put those strings in a vector
+		while (getline(stream4, str, delimiter))
+		{
+			fileStrings.push_back(str);
+		}
+
+		//set uranium sprite positions
+		for (size_t i = 0; i < fileStrings.size(); i++)
+		{
+			float x = stof(fileStrings[i].substr(0, fileStrings[i].find('-')));
+			float y = stof(fileStrings[i].substr(fileStrings[i].find('-') + 1));
+		}
+
 		break;
 	}
 }
 
-//load the coal resources, true means they are available for purchase at the start of the game
+//create the coal resources, true means they are available for purchase at the start of the game
 void GridResourceMarket::createCoalResources()
 {
 	m_coalResources.push_back(std::make_shared<GridResource>(GridResourceType::Coal, true, 1));

@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "Map.h"
+#include <string>
 class Connection
 {
 public:
@@ -8,8 +8,8 @@ public:
 		std::string secondCity, int cost);
 	~Connection();
 
-	std::string& getFirst() { return m_first; }
-	std::string& getSecond() { return m_second; }
+    std::string getFirst() const { return m_first; }
+	std::string getSecond() const  { return m_second; }
 	int getCost() { return m_cost; }
 
 private:

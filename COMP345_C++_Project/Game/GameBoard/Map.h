@@ -1,5 +1,6 @@
 #pragma once
 #include "../ResourceHolder.h"
+#include "Connection.h"
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
@@ -34,19 +35,25 @@ public:
 		};
 
 		std::shared_ptr<CitySlot> citySlots[SLOTS];
+		std::vector<std::shared_ptr<Connection>> m_connections;
+
+		std::vector<std::shared_ptr<Connection>>& getConnections() { return m_connections; }
 	};
 
 	void setMapSprite();
 	//creates a city object and initializes the 3 slots of the city
-	void setCity(std::string m_cityName, float x1, float y1, float x2, float y2, float x3, float y3);
+	std::shared_ptr<Map::City> setCity(std::string m_cityName, float x1, float y1, float x2, float y2, float x3, float y3);
+	void displayCities();
 
-	std::vector<std::shared_ptr<City>>& getCities() { return m_cities; }
+	std::map<std::string, std::shared_ptr<City>>& getCities() { return m_cities; }
+	std::shared_ptr<City> getCityByName(std::string name);
 	sf::Sprite& getMapSprite() { return m_mapSprite; }
 	sf::Text& getCityText() { return m_cityText; }
 
+	std::string getOppositeOf(const Connection& connection, std::string city);
+
 private:
-	std::vector<std::shared_ptr<City>> m_cities;
-	//this keeps track of the edges between regions that are connected
+	std::map<std::string, std::shared_ptr<City>> m_cities;
 	sf::Sprite m_mapSprite;
 	sf::Text m_cityText;
 };

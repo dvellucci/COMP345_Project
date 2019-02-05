@@ -24,5 +24,7 @@ public:
 
 private:
 	std::vector<std::shared_ptr<GridResource>> m_coalResources;
-	//std::shared_ptr<GridResource> m_coalResources[RESOURCE];
+	std::vector<std::shared_ptr<GridResource>> m_oilResources;
+	std::vector<std::shared_ptr<GridResource>> m_garbageResources;
+	std::vector<std::shared_ptr<GridResource>> m_uraniumResources;
 };
