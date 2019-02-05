@@ -1,5 +1,5 @@
 #include "GameState.h"
 
-void GameState::draw(sf::RenderWindow* window)
+void GameState::draw(sf::RenderWindow* mainWindow)
 {
 }

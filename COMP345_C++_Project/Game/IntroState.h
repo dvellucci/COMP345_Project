@@ -10,9 +10,9 @@ public:
 	~IntroState();
 
 	//Main loop functions
-	void handle_events(sf::RenderWindow& window, sf::Event& currEvent) ;
+	void handle_events(sf::RenderWindow* mainWindow, sf::Event& currEvent) ;
 	void logic();
-	void draw(sf::RenderWindow* window);
+	void draw(sf::RenderWindow* mainWindow);
 	bool getIsClosed() { return close; };
 
 private:

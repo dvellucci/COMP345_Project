@@ -21,12 +21,13 @@ public:
 	~PlayingState();
 
 	//Main loop functions
-	void handle_events(sf::RenderWindow& window, sf::Event& currEvent) override;
+	void handle_events(sf::RenderWindow* mainWindow, sf::Event& currEvent) override;
 	void logic() override;
-	void draw(sf::RenderWindow* window) override;
+	void draw(sf::RenderWindow* mainWindow) override;
 
 	//sets up the players and map
 	void setNumOfPlayers();
+	void setUpMap();
 	void setUpGame();
 
 private:

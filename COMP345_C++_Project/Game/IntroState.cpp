@@ -6,7 +6,7 @@ IntroState::IntroState() : close(false)
 {
 	m_titleSprite.setTexture(ResourceHolder::Instance()->get(Textures::Title));
 	m_titleSprite.setOrigin(m_titleSprite.getLocalBounds().width / 2.0f, m_titleSprite.getLocalBounds().height / 2.0f);
-	m_titleSprite.setPosition(mapWidth / 2, mapHeight / 2);
+	m_titleSprite.setPosition((float)mapWidth / 2, (float)mapHeight / 2);
 }
 
 IntroState::~IntroState()
@@ -14,9 +14,10 @@ IntroState::~IntroState()
 
 }
 
-void IntroState::handle_events(sf::RenderWindow& window, sf::Event& currEvent)
+//handles any keyboard or mouse events
+void IntroState::handle_events(sf::RenderWindow* mainWindow, sf::Event& currEvent)
 {
-	while (window.pollEvent(currEvent))
+	while (mainWindow->pollEvent(currEvent))
 	{
 		switch (currEvent.type)
 		{
@@ -40,7 +41,7 @@ void IntroState::logic()
 
 }
 
-void IntroState::draw(sf::RenderWindow* window)
+void IntroState::draw(sf::RenderWindow* mainWindow)
 {
-	window->draw(m_titleSprite);
+	mainWindow->draw(m_titleSprite);
 }

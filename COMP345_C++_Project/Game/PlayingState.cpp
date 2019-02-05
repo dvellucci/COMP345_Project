@@ -9,9 +9,6 @@ PlayingState::PlayingState() : m_quit(false), m_playing(false), m_initialBuyingP
 	m_mapManager = std::make_shared<MapManager>();
 	m_gridResourceMarket = std::make_shared<GridResourceMarket>();
 
-	//create the resources
-	m_gridResourceMarket->createCoalResources();
-
 	//set up the number of players and the map that will be played
 	setUpGame();
 }
@@ -21,9 +18,10 @@ PlayingState::~PlayingState()
 
 }
 
-void PlayingState::handle_events(sf::RenderWindow& window, sf::Event & currEvent)
+//handles any keyboard or mouse events
+void PlayingState::handle_events(sf::RenderWindow* mainWindow, sf::Event & currEvent)
 {
-	while (window.pollEvent(currEvent))
+	while (mainWindow->pollEvent(currEvent))
 	{
 		switch (currEvent.type)
 		{
@@ -45,7 +43,7 @@ void PlayingState::handle_events(sf::RenderWindow& window, sf::Event & currEvent
 				for (auto& cityPair : m_mapManager->getMap()->getCities())
 				{
 					auto city = cityPair.second;
-					if (city->citySlots[0]->m_slotSprite.getGlobalBounds().contains((float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y))
+					if (city->citySlots[0]->m_slotSprite.getGlobalBounds().contains((float)sf::Mouse::getPosition(*mainWindow).x, (float)sf::Mouse::getPosition(*mainWindow).y))
 					{
 						city->citySlots[0]->m_name[0] = toupper(city->citySlots[0]->m_name[0]);
 						m_mapManager->getMap()->getCityText().setString(city->citySlots[0]->m_name);
@@ -75,39 +73,39 @@ void PlayingState::logic()
 	}
 }
 
-void PlayingState::draw(sf::RenderWindow *window)
+//draw the map/resources/player houses
+void PlayingState::draw(sf::RenderWindow *mainWindow)
 {
 	//draw the map
-	window->draw(m_mapManager->getMap()->getMapSprite());
+	mainWindow->draw(m_mapManager->getMap()->getMapSprite());
 	//draw the houses the player has on the map
 	for (auto player : players) 
 	{
 		for (auto& citySlot : player->getOwnedCities())
 		{
-			window->draw(citySlot->m_slotSprite);
+			mainWindow->draw(citySlot->m_slotSprite);
 		}
 	}
+	//draw the resource market
+	m_gridResourceMarket->drawResourceMarket(mainWindow);
 
-	for (auto resource : m_gridResourceMarket->getCoalResources())
-	{
-		if(resource->getIsAvailable())
-			window->draw(resource->getResourceSprite());
-	}
-
-	window->draw(m_mapManager->getMap()->getCityText());
+	mainWindow->draw(m_mapManager->getMap()->getCityText());
 }
 
+//sets up the number of players the user specifies
 void PlayingState::setNumOfPlayers()
 {
 	int numOfPlayers = 0;
-	std::cout << "Enter number of players" << std::endl;
-
-	std::cin >> numOfPlayers;
+	std::cout << "Enter number of players between 2 and 6." << std::endl;
+	while (!(std::cin >> numOfPlayers) || numOfPlayers < 2 || numOfPlayers > 6)
+	{
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cout << "Invalid input. Enter a number between 2 and 6." << std::endl;
+	}
 
 	for (int i = 1; i <= numOfPlayers; i++)
 	{
-		//std::string playerSprite = "Player_" + std::to_string(i);
-		int tex = atoi("Player_" + i);
 		std::shared_ptr<Player> player = std::make_shared<Player>("Player " + std::to_string(i + 1), i);
 		players.push_back(player);
 	}
@@ -116,34 +114,44 @@ void PlayingState::setNumOfPlayers()
 	std::cout << std::endl;
 }
 
-//sets up the players and starts the game
-void PlayingState::setUpGame()
+//set up the map by reading from the map text file and load the resource market
+void PlayingState::setUpMap()
 {
-	setNumOfPlayers();
-
 	//show available maps
 	std::cout << "Available maps: " << std::endl;
 	for (size_t i = 0; i < m_mapManager->getAvailableMaps().size(); i++)
 	{
-		std::cout << i+1 << ". " << m_mapManager->getAvailableMaps()[i] << std::endl;
+		std::cout << i + 1 << ". " << m_mapManager->getAvailableMaps()[i] << std::endl;
 	}
 
-	//load the map the players want
 	int mapNum = 0;
 	std::cout << "Enter the number of the map to play" << std::endl;
-	std::cin >> mapNum;
+	while (!(std::cin >> mapNum) || mapNum < 0 || mapNum > (int)m_mapManager->getAvailableMaps().size())
+	{
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cout << "Invalid input. Enter a number corresponding with a map." << std::endl;
+	}
 
 	//parse the map data and the set the coordinates of the regions
 	std::string mapStr = m_mapManager->getAvailableMaps()[mapNum - 1];
 	std::transform(mapStr.begin(), mapStr.end(), mapStr.begin(), ::tolower);
 	m_mapManager->loadMap("Maps/" + mapStr + ".txt");
+
 	//load map texture
 	ResourceHolder::Instance()->loadTexture(Textures::Map, "Textures/Maps/" + mapStr + ".png");
 	//set the map sprite 
 	m_mapManager->getMap()->setMapSprite();
 
-	//load data for resource market from file
+	//create the resource market and load data for resource market from file
 	m_gridResourceMarket->loadMarketResource("Maps/" + mapStr + "ResourceCoords.txt");
+}
+
+//sets up the players and starts the game
+void PlayingState::setUpGame()
+{
+	setNumOfPlayers();
+	setUpMap();
 }
 
 
