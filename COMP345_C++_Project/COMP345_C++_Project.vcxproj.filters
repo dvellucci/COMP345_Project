@@ -45,6 +45,12 @@
     <ClCompile Include="Game\GameBoard\MapManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GridResource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GridResourceMarket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\GameStates.h">
@@ -80,7 +86,10 @@
     <ClInclude Include="Game\GameBoard\MapManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game\ResourceTypes.h">
+    <ClInclude Include="Game\GridResource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GridResourceMarket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

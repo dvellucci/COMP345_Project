@@ -10,7 +10,7 @@ ResourceHolder::~ResourceHolder() {
 
 void ResourceHolder::loadTexture(Textures::ID id, const std::string & filename) 
 {
-	std::unique_ptr<sf::Texture> texture(new sf::Texture());
+	std::unique_ptr<sf::Texture> texture = std::make_unique<sf::Texture>();
 
 	//load the texture from the file
 	if (!texture->loadFromFile(filename))
@@ -22,13 +22,13 @@ void ResourceHolder::loadTexture(Textures::ID id, const std::string & filename)
 	m_textureMap.insert(std::make_pair(id, std::move(texture)));
 }
 
-sf::Texture & ResourceHolder::get(Textures::ID id)
+sf::Texture& ResourceHolder::get(Textures::ID id)
 {
 	auto found = m_textureMap.find(id);
 	return *found->second;
 }
 
-const sf::Texture & ResourceHolder::get(Textures::ID id) const
+const sf::Texture& ResourceHolder::get(Textures::ID id) const
 {
 	auto found = m_textureMap.find(id);
 	return *found->second;
@@ -36,7 +36,7 @@ const sf::Texture & ResourceHolder::get(Textures::ID id) const
 
 void ResourceHolder::loadFont(Fonts::ID id, const std::string & filename)
 {
-	std::unique_ptr<sf::Font> font(new sf::Font());
+	std::unique_ptr<sf::Font> font = std::make_unique<sf::Font>();
 
 	//load font from a file
 	if (!font->loadFromFile(filename))
@@ -47,7 +47,7 @@ void ResourceHolder::loadFont(Fonts::ID id, const std::string & filename)
 	m_fontMap.insert(std::make_pair(id, std::move(font)));
 }
 
-sf::Font & ResourceHolder::get(Fonts::ID id)
+sf::Font& ResourceHolder::get(Fonts::ID id)
 {
 	auto found = m_fontMap.find(id);
 	return *found->second;

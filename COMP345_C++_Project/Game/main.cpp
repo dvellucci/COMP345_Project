@@ -1,9 +1,8 @@
 #include "game.h"
 
 GameState *currentState = NULL;
-
-int mapWidth = 1700;
-int mapHeight = 750;
+unsigned int mapWidth = 1700;
+unsigned int mapHeight = 1231;
 
 //the render function that will run on a seperate thread
 void renderingThread(sf::RenderWindow*& window)
@@ -20,6 +19,17 @@ void renderingThread(sf::RenderWindow*& window)
 	}
 }
 
+//thread for game logic
+void logicThread(sf::RenderWindow*& window)
+{
+//	window->setActive(true);
+	while (window->isOpen())
+	{
+		currentState->logic();
+	}
+	
+}
+
 /*-----------------MAYBE PUT ALL THIS IN GAME CLASS------------*/
 int main()
 {
@@ -33,25 +43,27 @@ int main()
 	sf::Event currEvent;
 	auto stateID = GameStates::PLAYING;
 	currentState = new IntroState();
-
 	
 	//start the thread that will do the rendering
 	mainWindow.setActive(false);
 	sf::Thread thread(&renderingThread, &mainWindow);
 	thread.launch();
 
-	//loop that handles logic and events
+	//start the thread that will do the game logic
+	mainWindow.setActive(false);
+	sf::Thread thread2(&logicThread, &mainWindow);
+	thread2.launch();
+
+	//loop that handles events
 	while (mainWindow.isOpen())
 	{
 		//handle any events in a state
 		currentState->handle_events(mainWindow, currEvent);
 
-		//Do state logic
-		currentState->logic();
-
 		//change state when needed
 		game.changeState(currentState, mainWindow);
 	}
 
+	delete currentState;
 	return 0;
 }

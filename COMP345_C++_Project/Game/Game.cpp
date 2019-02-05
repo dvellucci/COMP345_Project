@@ -2,17 +2,22 @@
 
 Game::Game() 
 {
-	//load textures and fonts
-	ResourceHolder::Instance()->loadTexture(Textures::Title, "Textures/power_grid_cover.png");
-	ResourceHolder::Instance()->loadFont(Fonts::Default, "Fonts/hemmet.ttf");
+	//load fonts
+	ResourceHolder::Instance()->loadFont(Fonts::Default, "Fonts/font.ttf");
 
-	//load player sprites
+	//load textures
+	ResourceHolder::Instance()->loadTexture(Textures::Title, "Textures/power_grid_cover.png");
+	ResourceHolder::Instance()->loadTexture(Textures::Default, "Textures/transparent.png");
 	ResourceHolder::Instance()->loadTexture(Textures::Player_1, "Textures/Houses/player1house.png");
 	ResourceHolder::Instance()->loadTexture(Textures::Player_2, "Textures/Houses/player2house.png");
 	ResourceHolder::Instance()->loadTexture(Textures::Player_3, "Textures/Houses/player3house.png");
 	ResourceHolder::Instance()->loadTexture(Textures::Player_4, "Textures/Houses/player4house.png");
 	ResourceHolder::Instance()->loadTexture(Textures::Player_5, "Textures/Houses/player5house.png");
 	ResourceHolder::Instance()->loadTexture(Textures::Player_6, "Textures/Houses/player6house.png");
+	ResourceHolder::Instance()->loadTexture(Textures::Coal, "Textures/Resources/coal.png");
+	ResourceHolder::Instance()->loadTexture(Textures::Oil, "Textures/Resources/oil.png");
+	ResourceHolder::Instance()->loadTexture(Textures::Garbage, "Textures/Resources/garbage.png");
+	ResourceHolder::Instance()->loadTexture(Textures::Uranium, "Textures/Resources/uranium.png");
 }
 
 Game::~Game() 

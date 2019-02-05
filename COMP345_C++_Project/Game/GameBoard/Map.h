@@ -1,5 +1,6 @@
 #pragma once
 #include "../ResourceHolder.h"
+#include "Connection.h"
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
@@ -9,7 +10,6 @@
 #include <list>
 #include <map>
 
-#define EDGES 100
 #define SLOTS 3
 class Map
 {
@@ -19,37 +19,41 @@ public:
 	~Map();
 
 	struct City {
-		City(std::string cityName);
-		~City();
+		City(std::string cityName) : m_cityName(cityName) {};
+		~City() {};
 
 		std::string m_cityName;
-		std::unique_ptr<sf::Sprite> m_tokenSprite;
 
 		struct CitySlot {
-			CitySlot(int type) { m_type = type; };
+			CitySlot(int type, std::string name) : m_type(type), m_name(name) { };
 			~CitySlot() {};
 
 			int m_type;
-			float xPos, yPos;
+			std::string m_name;
 			bool m_isOwned = false;
 			sf::Sprite m_slotSprite;
 		};
 
 		std::shared_ptr<CitySlot> citySlots[SLOTS];
+		std::vector<std::shared_ptr<Connection>> m_connections;
+
+		std::vector<std::shared_ptr<Connection>>& getConnections() { return m_connections; }
 	};
 
 	void setMapSprite();
-	void setCity(std::string cityName);
-	void setRegionCoords(int regionNumber, float x, float y);
-	void addEdge(int count, int val);
+	//creates a city object and initializes the 3 slots of the city
+	std::shared_ptr<Map::City> setCity(std::string m_cityName, float x1, float y1, float x2, float y2, float x3, float y3);
+	void displayCities();
 
-	std::vector<std::shared_ptr<City>>& getCities() { return m_cities; }
+	std::map<std::string, std::shared_ptr<City>>& getCities() { return m_cities; }
+	std::shared_ptr<City> getCityByName(std::string name);
 	sf::Sprite& getMapSprite() { return m_mapSprite; }
+	sf::Text& getCityText() { return m_cityText; }
+
+	std::string getOppositeOf(const Connection& connection, std::string city);
 
 private:
-	std::vector<std::shared_ptr<City>> m_cities;
-	std::map<std::string, std::list<std::string>> m_mapGraph;
-	//this keeps track of the edges between regions that are connected
-	int m_edges[EDGES][EDGES] = { 0 };
+	std::map<std::string, std::shared_ptr<City>> m_cities;
 	sf::Sprite m_mapSprite;
+	sf::Text m_cityText;
 };
