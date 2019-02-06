@@ -15,7 +15,7 @@ PlayingState::PlayingState() : m_quit(false), m_playing(false), m_initialBuyingP
 
 PlayingState::~PlayingState()
 {
-
+	
 }
 
 //handles any keyboard or mouse events

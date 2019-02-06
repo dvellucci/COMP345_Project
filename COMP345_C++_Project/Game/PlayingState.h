@@ -7,6 +7,7 @@
 #include "GameBoard/Map.h"
 #include "GameBoard/MapManager.h"
 #include "GridResourceMarket.h"
+#include "Deck.h"
 #include <vector>
 #include <fstream>
 #include <iostream>
@@ -42,7 +43,6 @@ private:
 
 	std::shared_ptr<MapManager> m_mapManager;
 	std::shared_ptr<GridResourceMarket> m_gridResourceMarket;
-
 };
 
 #endif
