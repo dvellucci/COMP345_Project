@@ -110,5 +110,8 @@
     <ClInclude Include="Game\PowerPlant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Game\StepCard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

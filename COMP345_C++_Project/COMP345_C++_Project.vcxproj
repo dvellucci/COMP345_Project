@@ -159,6 +159,7 @@
     <ClInclude Include="Game\ResourceHolder.h" />
     <ClInclude Include="Game\GridResource.h" />
     <ClInclude Include="Game\GridResourceMarket.h" />
+    <ClInclude Include="Game\StepCard.h" />
     <ClInclude Include="Game\Textures.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
