@@ -1,9 +1,10 @@
 #pragma once
 #include "Player.h"
 
-Player::Player(std::string playerName, int playerNum) : m_playerName(playerName), m_elektro(50),
-m_cities(22), m_playerNumber(playerNum)
+Player::Player(std::string playerName, int playerNum) : m_playerName(playerName), m_elektro(50), 
+m_availableHouses(22), m_playerNumber(playerNum)
 {
+	m_ownedCitySlots.reserve(22);
 	//TO BE REFACTORED
 	switch (m_playerNumber)
 	{
@@ -39,6 +40,11 @@ void Player::doPlayerTurn()
 	return;
 }
 
+void Player::setElektro(int amountSpent)
+{
+	m_elektro = m_elektro - amountSpent;
+}
+
 int Player::countPlayerCities()
 {	
 	std::set<std::string> cities;
@@ -49,14 +55,17 @@ int Player::countPlayerCities()
 	return 0;
 }
 
-std::vector<std::shared_ptr<Player>>& Player::getPlayerOrder(std::vector<std::shared_ptr<Player>>& players)
+bool Player::buyResources(std::vector<std::shared_ptr<GridResource>> resourceMarket, GridResourceType type, int amount)
 {
-	//check if no players have a city so that order is random
+	return false;
+}
 
+bool Player::buyPowerPlant(std::vector<std::shared_ptr<Card>> deck, int slotIndex)
+{
+	for (auto card : deck)
+	{
 
-	//determine player order by most cities
-	
-	
-	return players;
+	}
+	return false;
 }
 

@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Deck.cpp" />
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Game\GameBoard\Connection.cpp" />
     <ClCompile Include="Game\GameBoard\Map.cpp" />
@@ -137,10 +138,13 @@
     <ClCompile Include="Game\main.cpp" />
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Game\PlayingState.cpp" />
+    <ClCompile Include="Game\Card.cpp" />
+    <ClCompile Include="Game\PowerPlant.cpp" />
     <ClCompile Include="Game\ResourceHolder.cpp" />
     <ClCompile Include="Game\GridResourceMarket.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Deck.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\GameBoard\Connection.h" />
     <ClInclude Include="Game\GameBoard\MapManager.h" />
@@ -150,6 +154,8 @@
     <ClInclude Include="Game\GameBoard\Map.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\PlayingState.h" />
+    <ClInclude Include="Game\Card.h" />
+    <ClInclude Include="Game\PowerPlant.h" />
     <ClInclude Include="Game\ResourceHolder.h" />
     <ClInclude Include="Game\GridResource.h" />
     <ClInclude Include="Game\GridResourceMarket.h" />

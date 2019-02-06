@@ -154,4 +154,26 @@ void PlayingState::setUpGame()
 	setUpMap();
 }
 
+bool PlayingState::comparePriority(std::shared_ptr<Player> player1, std::shared_ptr<Player> player2)
+{
+	if (player1->getOwnedCities().size() > player2->getOwnedCities().size())
+		return true;
+	
+	if (player1->getOwnedCities().size() < player2->getOwnedCities().size())
+		return false;
+
+	//check power plants if tied
+	return false;
+}
+
+void PlayingState::updatePlayerOrder(bool reverse)
+{
+
+}
+
+void PlayingState::testPlayerDriver()
+{
+
+}
+
 

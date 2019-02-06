@@ -68,7 +68,6 @@ std::shared_ptr<Map> MapManager::loadMap(std::string filename)
 		}
 		//make an adjaceny list for the graph
 		m_mapGraph.emplace(make_pair(fileStrings[0], cityList));
-		graph.push_back(cityList);
 		cityList.clear();
 		fileStrings.clear();
 	}
