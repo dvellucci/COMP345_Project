@@ -45,27 +45,48 @@ void Player::setElektro(int amountSpent)
 	m_elektro = m_elektro - amountSpent;
 }
 
-int Player::countPlayerCities()
-{	
-	std::set<std::string> cities;
-	for (std::shared_ptr<Map::City::CitySlot> slot : m_ownedCitySlots)
-	{
-		
-	}
-	return 0;
-}
-
-bool Player::buyResources(std::vector<std::shared_ptr<GridResource>> resourceMarket, GridResourceType type, int amount)
-{
-	return false;
-}
 
 bool Player::buyPowerPlant(std::vector<std::shared_ptr<Card>> deck, int slotIndex)
 {
-	for (auto card : deck)
+	for (auto& card : deck)
 	{
 
 	}
 	return false;
+}
+
+
+bool Player::purchaseResource(std::shared_ptr<GridResourceMarket> market, std::shared_ptr<Card> plant, GridResourceType type, int amount)
+{
+	//return false if there isn't the required amount of resources available
+	if (amount > market->getAvailableResourceType(type))
+		return false;
+
+	auto resourceType = type;
+	if (type == GridResourceType::Coal)
+	{
+		m_storedResources.emplace(std::make_pair(GridResourceType::Coal, amount));		
+	}
+	else if (type == GridResourceType::Oil)
+	{
+		m_storedResources.emplace(std::make_pair(GridResourceType::Oil, amount));
+	}
+	else if (type == GridResourceType::Garbage)
+	{
+		m_storedResources.emplace(std::make_pair(GridResourceType::Garbage, amount));
+	}
+	else if (type == GridResourceType::Uranium)
+	{
+		m_storedResources.emplace(std::make_pair(GridResourceType::Uranium, amount));
+	}
+	//remove the resources bought by the player from the market
+	market->removeResourcesFromMarket(resourceType, amount);
+
+	return true;
+}
+
+int Player::countPlayerCities()
+{	
+	return m_ownedCitySlots.size();
 }
 

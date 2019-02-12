@@ -2,7 +2,7 @@
 #include "GameBoard/Map.h"
 #include "ResourceHolder.h"
 #include "GridResourceMarket.h"
-#include "Card.h"
+#include "PowerPlant.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <memory>
@@ -18,17 +18,21 @@ public:
 	void setElektro(int amountSpent);
 
 	int getPlayerNumber() { return m_playerNumber; }
+	int getElektro() { return m_elektro; }
 	int countPlayerCities();
 
 	std::string getPlayerName() { return m_playerName; }
 	std::vector<std::shared_ptr<Map::City::CitySlot>>& getOwnedCities() { return m_ownedCitySlots; }
+	std::vector<std::shared_ptr<Card>>& getPowerPlants() { return m_powerPlants; }
 
-	bool buyResources(std::vector<std::shared_ptr<GridResource>> resourceMarket, GridResourceType type, int amount);
 	bool buyPowerPlant(std::vector<std::shared_ptr<Card>> deck, int slotIndex);
+	bool purchaseResource(std::shared_ptr<GridResourceMarket> market, std::shared_ptr<Card> plant, GridResourceType type, int amount);
+
+	sf::Texture& getPlayerTexture() { return m_playerTexture; }
 
 private:
 	std::vector<std::shared_ptr<Map::City::CitySlot>> m_ownedCitySlots;
-	std::vector<std::shared_ptr<GridResource>> m_resources;
+	std::map<GridResourceType, int> m_storedResources;
 	std::vector<std::shared_ptr<Card>> m_powerPlants;
 	sf::Texture m_playerTexture;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Card.h"
 #include "PowerPlant.h"
+#include "StepCard.h"
 #include <vector>
 #include <memory>
 

@@ -94,7 +94,6 @@ void GridResourceMarket::loadMarketResource(std::string filename)
 			float x = stof(fileStrings[i].substr(0, fileStrings[i].find('-')));
 			float y = stof(fileStrings[i].substr(fileStrings[i].find('-') + 1));
 			m_garbageResources[i]->getResourceSprite().setPosition(x, y);
-
 		}
 		str.clear();
 		fileStrings.clear();
@@ -264,5 +263,89 @@ void GridResourceMarket::drawResourceMarket(sf::RenderWindow *&mainWindow)
 		if (resource->getIsAvailable())
 			mainWindow->draw(resource->getResourceSprite());
 	}
+}
+
+//remove resources from the market
+bool GridResourceMarket::removeResourcesFromMarket(GridResourceType type, int amount)
+{
+	switch (type)
+	{
+	case GridResourceType::Coal:
+		for (auto& coal : m_coalResources)
+		{
+			
+		}
+		break;
+	case GridResourceType::Oil:
+		for (auto& oil : m_oilResources)
+		{
+
+		}
+		break;
+	case GridResourceType::Garbage:
+		for (auto& garbage : m_garbageResources)
+		{
+
+		}
+		break;
+	case GridResourceType::Uranium:
+		for (auto& uranium : m_uraniumResources)
+		{
+
+		}
+		break;
+	default:
+		break;
+	}
+	return true;
+}
+
+//returns number of resources available for a type
+int GridResourceMarket::getAvailableResourceType(GridResourceType type)
+{
+	int count = 0;
+	if (type == GridResourceType::Coal)
+	{
+		for (auto& resource : m_coalResources)
+			if (resource->getIsAvailable())
+				count++;
+	}
+	else if (type == GridResourceType::Oil)
+	{
+		for (auto& resource : m_oilResources)
+			if (resource->getIsAvailable())
+				count++;
+	}
+	else if (type == GridResourceType::Garbage)
+	{
+		for (auto& resource : m_garbageResources)
+			if (resource->getIsAvailable())
+				count++;
+	}
+	else if (type == GridResourceType::Uranium)
+	{
+		for (auto& resource : m_uraniumResources)
+			if (resource->getIsAvailable())
+				count++;
+	}
+	return count;
+}
+
+GridResourceType GridResourceMarket::getResourceTypeByName(std::string name)
+{
+	//return coal by default
+	GridResourceType resourceType = Coal;
+	std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+
+	if (name == "coal")
+		resourceType = Coal;
+	else if (name == "oil")
+		resourceType = Oil;
+	else if (name == "garbage")
+		resourceType = Garbage;
+	else if (name == "uranium")
+		resourceType = Uranium;
+
+	return resourceType;
 }
 

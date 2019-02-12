@@ -65,6 +65,9 @@ void PlayingState::logic()
 			break;
 		}
 		
+		buyResourcesTestDriver();
+		//testPlayerDriver();
+
 		//do the initial city buying phase
 		for (const auto &player : players)
 		{
@@ -136,7 +139,8 @@ void PlayingState::setUpMap()
 	//parse the map data and the set the coordinates of the regions
 	std::string mapStr = m_mapManager->getAvailableMaps()[mapNum - 1];
 	std::transform(mapStr.begin(), mapStr.end(), mapStr.begin(), ::tolower);
-	m_mapManager->loadMap("Maps/" + mapStr + ".txt");
+	//this will be "Maps/" + mapStr + ".txt"
+	m_mapManager->loadMap("Maps/turkey.txt");
 
 	//load map texture
 	ResourceHolder::Instance()->loadTexture(Textures::Map, "Textures/Maps/" + mapStr + ".png");
@@ -144,7 +148,7 @@ void PlayingState::setUpMap()
 	m_mapManager->getMap()->setMapSprite();
 
 	//create the resource market and load data for resource market from file
-	m_gridResourceMarket->loadMarketResource("Maps/" + mapStr + "ResourceCoords.txt");
+	m_gridResourceMarket->loadMarketResource("Maps/turkeyResourceCoords.txt");
 }
 
 //sets up the players and starts the game
@@ -152,6 +156,7 @@ void PlayingState::setUpGame()
 {
 	setNumOfPlayers();
 	setUpMap();
+	std::cout << "Press enter to begin playing the game." << std::endl;
 }
 
 bool PlayingState::comparePriority(std::shared_ptr<Player> player1, std::shared_ptr<Player> player2)
@@ -171,9 +176,88 @@ void PlayingState::updatePlayerOrder(bool reverse)
 
 }
 
-void PlayingState::testPlayerDriver()
+//buying resources test
+void PlayingState::buyResourcesTestDriver()
 {
+	std::cout << "Buying resources phase: " << std::endl;
+	int oil = m_gridResourceMarket->getAvailableResourceType(GridResourceType::Oil);
+	int coal = m_gridResourceMarket->getAvailableResourceType(GridResourceType::Coal);
+	int garbage = m_gridResourceMarket->getAvailableResourceType(GridResourceType::Garbage);
+	int uranium = m_gridResourceMarket->getAvailableResourceType(GridResourceType::Uranium);
+	
+	for (auto& player : players)
+	{
+		std::cout << "Type the type of resource to buy" << std::endl;
+		std::string resource;
+		std::transform(resource.begin(), resource.end(), resource.begin(), ::tolower);
+		while (!(std::cin >> resource) || (resource != "coal" && resource != "oil" && 
+			resource != "garbage" && resource != "uranium"))
+		{
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cout << "That is an invalid resource. Input another resource." << std::endl;
+		}
 
+		std::cout << "Enter how many you would like to buy." << std::endl;
+		int num = 0;
+		GridResourceType type = m_gridResourceMarket->getResourceTypeByName(resource);
+		//Ask again if the input is wrong or there isn't enough resources available in the market
+		while (!(std::cin >> num) || !player->purchaseResource(m_gridResourceMarket, nullptr, type, num))
+		{
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cout << "Enter a valid number of the resource to buy." << std::endl;
+		}
+
+		if (resource == "coal")
+		{
+
+		}
+	}
+}
+
+//test to place player houses
+void PlayingState::buyPlayerHouseTestDriver()
+{
+	std::map<std::string, std::shared_ptr<Map::City>>::iterator it;
+	//TODO: Test auction
+	int i = 1;
+	for (it = m_mapManager->getMap()->getCities().begin(); it != m_mapManager->getMap()->getCities().end(); it++)
+	{
+		std::cout << i << ". " << it->first << std::endl;
+		i++;
+	}
+
+	for (auto& player : players)
+	{
+		std::string city;
+		std::cout << "Select city to buy." << std::endl;
+		while (!(std::cin >> city) || m_mapManager->getMap()->getCityByName(city)->citySlots[2]->m_isOwned)
+		{
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cout << city << " is already owned by somebody or invalid input. Pick another city." << std::endl;
+		}
+
+		auto pickedCity = m_mapManager->getMap()->getCities().at(city);
+		int cost = m_mapManager->getShortestPathFromPlayer(player, pickedCity->m_cityName) + pickedCity->citySlots[2]->m_type;
+
+		int buy = 0;
+		std::cout << "Your cost is " << cost << ". You have " << player->getElektro() << ". Would you like to purchase?" << std::endl;
+		while (!(std::cin >> buy) || buy < 0 || buy > 1)
+		{
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cout << "Enter 1 for yes, 0 for no." << std::endl;
+		}
+
+		player->setElektro(cost);
+		player->getOwnedCities().push_back(pickedCity->citySlots[2]);
+		pickedCity->citySlots[2]->m_slotSprite.setTexture(player->getPlayerTexture());
+		pickedCity->citySlots[2]->m_isOwned = true;
+		std::cout << "Player " << player->getPlayerNumber() << " has " << player->getElektro() << " elektro left." << std::endl;
+	}
+	
 }
 
 

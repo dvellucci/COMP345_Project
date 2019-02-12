@@ -110,6 +110,7 @@ int MapManager::getShortestPath(std::string fromCity, std::string toCity)
 
 	
 	// If any city was not found
+	std::transform(fromCity.begin(), fromCity.end(), fromCity.begin(), ::tolower);
 	if (m_map->getCities().find(fromCity) == m_map->getCities().end() || m_map->getCities().find(toCity) == m_map->getCities().end()) 
 	{
 		std::cout << "Cannot find " << fromCity << " or " << toCity << "." << std::endl;

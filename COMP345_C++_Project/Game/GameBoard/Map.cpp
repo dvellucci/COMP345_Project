@@ -4,7 +4,7 @@ Map::Map()
 {
 	m_cityText.setFont(ResourceHolder::Instance()->get(Fonts::Default));
 	m_cityText.setFillColor(sf::Color::Black);
-	m_cityText.setPosition(250.0f, 170.0f);
+	m_cityText.setPosition(250.0f, 150.0f);
 	m_cityText.setStyle(sf::Text::Bold);
 }
 

@@ -18,16 +18,20 @@ public:
 	~GridResourceMarket();
 
 	void setResourceMarket();
+
 	void createCoalResources();
 	void createOilResources();
 	void createGarbageResources();
 	void createUraniumResources();
 
-	void drawResourceMarket(sf::RenderWindow *&mainWindow);
-
 	void loadMarketResource(std::string filename);
+	void drawResourceMarket(sf::RenderWindow *&mainWindow);
+	bool removeResourcesFromMarket(GridResourceType type, int amount);
+
 	std::vector<std::shared_ptr<GridResource>>& getCoalResources() { return m_coalResources; }
 	std::vector<std::shared_ptr<GridResource>>& getOilResources() { return m_oilResources; }
+	int getAvailableResourceType(GridResourceType type);
+	GridResourceType getResourceTypeByName(std::string name);
 
 private:
 	std::vector<std::shared_ptr<GridResource>> m_coalResources;

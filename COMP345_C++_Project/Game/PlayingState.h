@@ -33,7 +33,9 @@ public:
 
 	bool comparePriority(std::shared_ptr<Player> player1, std::shared_ptr<Player> player2);
 	void updatePlayerOrder(bool reverse);
-	void testPlayerDriver();
+
+	void buyResourcesTestDriver();
+	void buyPlayerHouseTestDriver();
 
 private:
 	std::vector<std::shared_ptr<Player>> players;

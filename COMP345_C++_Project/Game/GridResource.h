@@ -6,10 +6,11 @@
 
 enum GridResourceType
 {
-	Coal,
-	Oil,
-	Garbage,
-	Uranium
+	Coal = 0,
+	Oil = 1,
+	Garbage = 2,
+	Uranium = 3,
+	No_Resource = 4,
 };
 
 
@@ -21,7 +22,6 @@ public:
 
 	void setResourceSprite();
 
-	GridResourceType getResourceTypeByName(std::string name);
 	bool getIsAvailable() { return m_isAvailable; }
 	sf::Sprite& getResourceSprite() { return m_resourceSprite; }
 

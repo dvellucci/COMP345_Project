@@ -50,13 +50,13 @@ void Game::gameLoop()
 
 	//start the thread that will do the rendering
 	mainWindow->setActive(false);
-	sf::Thread thread(&Game::renderingThread, this);
-	thread.launch();
+	sf::Thread renderThread(&Game::renderingThread, this);
+	renderThread.launch();
 
 	//start the thread that will do the game logic
 	mainWindow->setActive(false);
-	sf::Thread thread2(&Game::logicThread, this);
-	thread2.launch();
+	sf::Thread logicThread(&Game::logicThread, this);
+	logicThread.launch();
 
 	//loop to handle events
 	while (mainWindow->isOpen())

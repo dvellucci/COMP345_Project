@@ -1,19 +1,22 @@
 #pragma once
 #include "Card.h"
+#include "GridResourceMarket.h"
 
 class PowerPlant : public Card
 {
 public:
-	PowerPlant(CardType cardType, GridResourceType resourceType, int minimalBid, int numOfHouse, int numOfResources);
+	PowerPlant(CardType cardType, GridResourceType resourceType, int price, int numOfHouse, int capacity);
 	~PowerPlant();
 
-	int getPlantNumber() { return m_plantNumber; }
+	int getPowerPlantPrice() { return m_price; }
 
 private:
 	CardType m_cardType;
 	GridResourceType m_resourceType;
-	int m_plantNumber;
+	//resources stored by the power plant
+	std::map<GridResourceType, int> m_storedResources; 
+	int m_price;
 	int m_numOfHouses;
-	int m_numOfResources;
+	int m_capacity;
 
 };
