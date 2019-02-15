@@ -65,7 +65,7 @@ void PlayingState::logic()
 			break;
 		}
 		
-		buyResourcesTestDriver();
+		buyResourcesPhase();
 		//testPlayerDriver();
 
 		//do the initial city buying phase
@@ -176,8 +176,12 @@ void PlayingState::updatePlayerOrder(bool reverse)
 
 }
 
+void PlayingState::powerPlantAuctionPhase()
+{
+}
+
 //buying resources test
-void PlayingState::buyResourcesTestDriver()
+void PlayingState::buyResourcesPhase()
 {
 	std::cout << "Buying resources phase: " << std::endl;
 	int oil = m_gridResourceMarket->getAvailableResourceType(GridResourceType::Oil);
@@ -216,8 +220,16 @@ void PlayingState::buyResourcesTestDriver()
 	}
 }
 
+void PlayingState::buildingPhase()
+{
+}
+
+void PlayingState::bureaucracyPhase()
+{
+}
+
 //test to place player houses
-void PlayingState::buyPlayerHouseTestDriver()
+void PlayingState::playerDriver()
 {
 	std::map<std::string, std::shared_ptr<Map::City>>::iterator it;
 	//TODO: Test auction

@@ -31,11 +31,17 @@ public:
 	void setUpMap();
 	void setUpGame();
 
-	bool comparePriority(std::shared_ptr<Player> player1, std::shared_ptr<Player> player2);
+	//the phases of a turn
 	void updatePlayerOrder(bool reverse);
+	void powerPlantAuctionPhase();
+	void buyResourcesPhase();
+	void buildingPhase();
+	void bureaucracyPhase();
 
-	void buyResourcesTestDriver();
-	void buyPlayerHouseTestDriver();
+	//player driver for test functionality
+	void playerDriver();
+
+	bool comparePriority(std::shared_ptr<Player> player1, std::shared_ptr<Player> player2);
 
 private:
 	std::vector<std::shared_ptr<Player>> players;
