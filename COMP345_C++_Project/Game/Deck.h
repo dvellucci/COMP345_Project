@@ -5,6 +5,8 @@
 #include <vector>
 #include <memory>
 
+#define POWER_PLANT_MARKET 3
+
 class Deck
 {
 public:
@@ -12,10 +14,28 @@ public:
 	~Deck();
 	
 	void setUpDeck();
+	void setUpMarket();
+	void outputMarket();
+	void outputPowerPlant(std::shared_ptr<PowerPlant> plant);
 	void shuffle(std::vector<std::shared_ptr<Card>>& m_deck);
-	std::shared_ptr<PowerPlant> getPowerPlantByNumber(int n);
+
+	void removePlantFromMarket(int index);
+	bool drawCard();
+
+	std::vector<std::shared_ptr<Card>>& getDeck() { return m_deck; }
+	std::vector<std::shared_ptr<Card>>& getPowerPlantMarket() { return m_powerPlantMarket; }
+	std::shared_ptr<PowerPlant> getPowerPlantCard(int index);
+
+	struct PowerPlantPrice
+	{
+		bool operator() (const std::shared_ptr<Card> plant1, const std::shared_ptr<Card> plant2)
+		{
+			return (std::dynamic_pointer_cast<PowerPlant>(plant1)->getPowerPlantPrice() < std::dynamic_pointer_cast<PowerPlant>(plant2)->getPowerPlantPrice());
+		}
+	};
 
 private:
+	std::vector<std::shared_ptr<Card>> m_deck;
+	std::vector<std::shared_ptr<Card>> m_powerPlantMarket;
 
-	std::vector<Card*> m_deck;
 };

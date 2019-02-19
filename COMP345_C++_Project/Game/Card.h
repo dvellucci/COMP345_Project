@@ -12,13 +12,12 @@ enum CardType
 class Card
 {
 public:
-	Card(CardType type);
-	~Card();
+	Card() {};
+	explicit Card(CardType type);
+	virtual ~Card() {}
 
 	CardType getCardTypeByName(std::string name);
 
 protected:
 	CardType m_type;
-	int m_numOfHouses;
-	int m_numOfResources;
 };
