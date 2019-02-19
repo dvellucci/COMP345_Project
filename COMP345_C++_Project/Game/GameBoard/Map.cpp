@@ -30,7 +30,7 @@ std::shared_ptr<Map::City>  Map::setCity(std::string m_cityName, float x1, float
 	city->citySlots[1] = slot2;
 	city->citySlots[2] = slot3;
 
-	//set city slot coords
+	//set city slot coordinates
 	city->citySlots[0]->m_slotSprite.setPosition(x1, y1);
 	city->citySlots[0]->m_slotSprite.setTexture(ResourceHolder::Instance()->get(Textures::Default));
 	city->citySlots[1]->m_slotSprite.setPosition(x2, y2);
