@@ -21,7 +21,9 @@ public:
 	~GridResource();
 
 	void setResourceSprite();
+	void setAvailability(bool available) { m_isAvailable = available; }
 
+	int getCost() { return m_cost; }
 	bool getIsAvailable() { return m_isAvailable; }
 	sf::Sprite& getResourceSprite() { return m_resourceSprite; }
 

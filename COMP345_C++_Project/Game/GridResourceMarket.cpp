@@ -268,34 +268,51 @@ void GridResourceMarket::drawResourceMarket(sf::RenderWindow *&mainWindow)
 //remove resources from the market
 bool GridResourceMarket::removeResourcesFromMarket(GridResourceType type, int amount)
 {
-	switch (type)
+	int count = 0;
+	if (type == GridResourceType::Coal)
 	{
-	case GridResourceType::Coal:
-		for (auto& coal : m_coalResources)
-		{
-			
-		}
-		break;
-	case GridResourceType::Oil:
-		for (auto& oil : m_oilResources)
-		{
-
-		}
-		break;
-	case GridResourceType::Garbage:
-		for (auto& garbage : m_garbageResources)
-		{
-
-		}
-		break;
-	case GridResourceType::Uranium:
-		for (auto& uranium : m_uraniumResources)
-		{
-
-		}
-		break;
-	default:
-		break;
+		for (auto& resource : m_coalResources)
+			if (resource->getIsAvailable())
+			{
+				resource->setAvailability(false);
+				count++;
+				if (count == amount)
+					break;
+			}
+				
+	}
+	else if (type == GridResourceType::Oil)
+	{
+		for (auto& resource : m_oilResources)
+			if (resource->getIsAvailable())
+			{
+				resource->setAvailability(false);
+				count++;
+				if (count == amount)
+					break;
+			}
+	}
+	else if (type == GridResourceType::Garbage)
+	{
+		for (auto& resource : m_garbageResources)
+			if (resource->getIsAvailable())
+			{
+				resource->setAvailability(false);
+				count++;
+				if (count == amount)
+					break;
+			}
+	}
+	else if (type == GridResourceType::Uranium)
+	{
+		for (auto& resource : m_uraniumResources)
+			if (resource->getIsAvailable())
+			{
+				resource->setAvailability(false);
+				count++;
+				if (count == amount)
+					break;
+			}
 	}
 	return true;
 }
@@ -331,6 +348,73 @@ int GridResourceMarket::getAvailableResourceType(GridResourceType type)
 	return count;
 }
 
+//gets the price by taking the cheapest resources of the type available
+int GridResourceMarket::getPriceOfResources(GridResourceType type, int amount)
+{
+	int price = 0;
+	//checks if there are not enough resources for the amount
+	if (getAvailableResourceType(type) < amount)
+	{
+		return -1;
+	}
+
+	int counter = 0;
+	if (type == GridResourceType::Coal)
+	{
+		for (auto resource : m_coalResources)
+		{
+			if (resource->getIsAvailable())
+			{
+				price += resource->getCost();
+				counter++;
+				if (counter == amount)
+					break;
+			}
+		}
+	}
+	else if (type == GridResourceType::Oil)
+	{
+		for (auto resource : m_oilResources)
+		{
+			if (resource->getIsAvailable())
+			{
+				price += resource->getCost();
+				counter++;
+				if (counter == amount)
+					break;
+			}
+		}
+	}
+	else if (type == GridResourceType::Garbage)
+	{
+		for (auto resource : m_garbageResources)
+		{
+			if (resource->getIsAvailable())
+			{
+				price += resource->getCost();
+				counter++;
+				if (counter == amount)
+					break;
+			}
+		}
+	}
+	else if (type == GridResourceType::Uranium)
+	{
+		for (auto resource : m_uraniumResources)
+		{
+			if (resource->getIsAvailable())
+			{
+				price += resource->getCost();
+				counter++;
+				if (counter == amount)
+					break;
+			}
+		}
+	}
+
+	return price;
+}
+
 GridResourceType GridResourceMarket::getResourceTypeByName(std::string name)
 {
 	//return coal by default
@@ -347,5 +431,19 @@ GridResourceType GridResourceMarket::getResourceTypeByName(std::string name)
 		resourceType = Uranium;
 
 	return resourceType;
+}
+
+std::string GridResourceMarket::getResourceType(GridResourceType type)
+{
+	if (type == GridResourceType::Coal)
+		return "Coal";
+	else if (type == GridResourceType::Oil)
+		return "Oil";
+	else if (type == GridResourceType::Garbage)
+		return "Garbage";
+	else if (type == GridResourceType::Uranium)
+		return "Uranium";
+	
+	return "No Resource";
 }
 

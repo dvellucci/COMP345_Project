@@ -1,11 +1,9 @@
 #include "PowerPlant.h"
 
-PowerPlant::PowerPlant(CardType cardType, GridResourceType type1, GridResourceType type2, int price, int numOfHouse, int capacity) : Card(cardType),
-m_resourceType(type1), m_resourceType2(type2), m_price(price), m_numOfHouses(numOfHouse), m_capacity(capacity)
+PowerPlant::PowerPlant(CardType cardType, int price, int numOfHouse, int capacity) : Card(cardType),
+m_price(price), m_numOfHouses(numOfHouse), m_capacity(capacity)
 {
-	m_validResources.insert(type1);
-	if (type1 != type2)
-		m_validResources.insert(type2);
+	
 }
 
 PowerPlant::~PowerPlant()
@@ -37,4 +35,12 @@ std::string PowerPlant::getResourceTypeName(GridResourceType type)
 		return "No resource";
 
 	return "";
+}
+
+int PowerPlant::getNumOfPlacedResources()
+{
+	int total = 0;
+	for (auto iterator = m_storedResources.begin(); iterator != m_storedResources.end(); iterator++)
+		total += iterator->second;
+	return total;
 }

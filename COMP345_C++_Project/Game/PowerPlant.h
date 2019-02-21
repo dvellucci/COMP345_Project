@@ -6,8 +6,10 @@
 class PowerPlant : public Card
 {
 public:
-	PowerPlant(CardType cardType, GridResourceType type1, GridResourceType type2, int price, int numOfHouse, int capacity);
+	PowerPlant(CardType cardType, int price, int numOfHouse, int capacity);
 	~PowerPlant();
+	
+	void setValidResource(GridResourceType type) { m_validResources.insert(type); }
 
 	bool storeResource(GridResourceType type, int amount);
 	GridResourceType getResourceType1() { return m_resourceType; }
@@ -16,6 +18,8 @@ public:
 	int getPowerPlantPrice() { return m_price; }
 	int getPowerPlantCapacity() { return m_capacity; }
 	int getPowerPlantHouses() { return m_numOfHouses; }
+	int getNumOfPlacedResources();
+	std::set<GridResourceType> getValidResources() { return m_validResources; }
 
 private:
 	CardType m_cardType;
