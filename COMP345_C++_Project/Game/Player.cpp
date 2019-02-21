@@ -67,7 +67,7 @@ void Player::replacePowerPlant(std::shared_ptr<Deck> deckManager, int slotIndex,
 		deckManager->outputPowerPlant(powerPlant);
 	}
 
-	int index = 0;
+	unsigned int index = 0;
 	while (!(std::cin >> index) || index < 0 || index >= m_powerPlants.size())
 	{
 		std::cin.clear();
@@ -87,33 +87,21 @@ void Player::replacePowerPlant(std::shared_ptr<Deck> deckManager, int slotIndex,
 }
 
 
-bool Player::purchaseResource(std::shared_ptr<GridResourceMarket> market, std::shared_ptr<Card> plant, GridResourceType type, int amount)
+bool Player::purchaseResource(std::shared_ptr<GridResourceMarket> market, std::shared_ptr<PowerPlant> plant, GridResourceType type, int amount)
 {
-	//return false if there isn't the required amount of resources available
-	if (amount > market->getAvailableResourceType(type))
-		return false;
+	int price = market->getPriceOfResources(type, amount);
+	
+	//plant->GetActiveResources().find(resource) != plant->GetActiveResources().end())
+	if (amount >= 0 && m_elektro >= price && (plant->getNumOfPlacedResources() + amount <= 2 * plant->getPowerPlantCapacity()))
+	{
+		plant->storeResource(type, amount);
+		m_elektro = m_elektro - price;
+		market->removeResourcesFromMarket(type, amount);
+		std::cout << "You have " << m_elektro << " elektro remaining after this purchase." << std::endl << std::endl;
+		return true;
+	}
 
-	auto resourceType = type;
-	if (type == GridResourceType::Coal)
-	{
-		m_storedResources.emplace(std::make_pair(GridResourceType::Coal, amount));		
-	}
-	else if (type == GridResourceType::Oil)
-	{
-		m_storedResources.emplace(std::make_pair(GridResourceType::Oil, amount));
-	}
-	else if (type == GridResourceType::Garbage)
-	{
-		m_storedResources.emplace(std::make_pair(GridResourceType::Garbage, amount));
-	}
-	else if (type == GridResourceType::Uranium)
-	{
-		m_storedResources.emplace(std::make_pair(GridResourceType::Uranium, amount));
-	}
-	//remove the resources bought by the player from the market
-	market->removeResourcesFromMarket(resourceType, amount);
-
-	return true;
+	return false;
 }
 
 int Player::countPlayerCities()

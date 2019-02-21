@@ -28,7 +28,7 @@ public:
 	std::vector<std::shared_ptr<Map::City::CitySlot>>& getOwnedCities() { return m_ownedCitySlots; }
 	std::vector<std::shared_ptr<Card>>& getPowerPlants() { return m_powerPlants; }
 
-	bool purchaseResource(std::shared_ptr<GridResourceMarket> market, std::shared_ptr<Card> plant, GridResourceType type, int amount);
+	bool purchaseResource(std::shared_ptr<GridResourceMarket> market, std::shared_ptr<PowerPlant> plant, GridResourceType type, int amount);
 
 	sf::Texture& getPlayerTexture() { return m_playerTexture; }
 

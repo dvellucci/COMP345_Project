@@ -45,13 +45,17 @@ public:
 	void phase2EndBid();
 	void phase2End();
 
+	//phase 3: the buying resources phase
 	void doPhase3();
-	void buyResourcesPhase();
+	void phase3BuyResources1();
+	void phase3BuyResources2(int amount);
+
+	void doPhase4();
+	void phase4Start();
+	void phase4BuyCities1();
+
 	void buildingPhase();
 	void bureaucracyPhase();
-
-	//player driver for test functionality
-	void playerDriver();
 
 	void printGameInfo();
 
@@ -62,6 +66,8 @@ public:
 			return (player1->getHighestPowerPlant() > player2->getHighestPowerPlant());
 		}
 	};
+
+	int getNextPlayer();
 
 private:
 	std::vector<std::shared_ptr<Player>> m_players;
@@ -81,8 +87,8 @@ private:
 	std::shared_ptr<Player> m_highestBidder;
 
 	int m_currentBid;
-	int m_powerPlantIndex;
-	int m_resourceIndex;
+	unsigned int m_powerPlantIndex;
+	unsigned int m_resourceIndex;
 
 	bool m_initialBid;
 	bool m_playing;

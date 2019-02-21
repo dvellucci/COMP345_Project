@@ -31,7 +31,9 @@ public:
 	std::vector<std::shared_ptr<GridResource>>& getCoalResources() { return m_coalResources; }
 	std::vector<std::shared_ptr<GridResource>>& getOilResources() { return m_oilResources; }
 	int getAvailableResourceType(GridResourceType type);
+	int getPriceOfResources(GridResourceType type, int amount);
 	GridResourceType getResourceTypeByName(std::string name);
+	std::string getResourceType(GridResourceType type);
 
 private:
 	std::vector<std::shared_ptr<GridResource>> m_coalResources;

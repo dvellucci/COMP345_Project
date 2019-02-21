@@ -1,5 +1,7 @@
 #include "Deck.h"
 
+std::string Deck::cardsFilePath = "Cards/resourceCardsData.txt";
+
 Deck::Deck()
 {
 	m_deck.reserve(43);
@@ -10,30 +12,61 @@ Deck::~Deck()
 	
 }
 
-void Deck::setUpDeck()
+//load the data of each card from a file
+void Deck::setUpDeck(std::string filename)
 {
-	//place the step 3 card at the bottom
-	//m_deck.emplace_back(std::make_shared<StepCard>(CardType::Step_3));
-	//initialize power plant cards and place them in the deck (first number is price, second is houses it powers, third is resource capacity)
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Oil, GridResourceType::No_Resource, 3, 1, 4));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Coal, GridResourceType::No_Resource, 4, 1, 4));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Coal, GridResourceType::Oil, 5, 1, 4));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Garbage, GridResourceType::No_Resource, 6, 1, 2));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Oil, GridResourceType::No_Resource, 7, 2, 6));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Coal, GridResourceType::No_Resource, 8, 2, 6));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Garbage, GridResourceType::No_Resource, 9, 1, 2));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Coal, GridResourceType::No_Resource, 10, 2, 4));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Uranium, GridResourceType::No_Resource, 11, 2, 2));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Coal, GridResourceType::Oil, 12, 2, 4));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::No_Resource, GridResourceType::No_Resource, 13, 1, 0));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Garbage, GridResourceType::No_Resource, 14, 2, 4));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Coal, GridResourceType::No_Resource, 15, 3, 4));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Oil, GridResourceType::No_Resource, 16, 3, 4));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Uranium, GridResourceType::No_Resource, 17, 2, 2));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::No_Resource, GridResourceType::No_Resource, 18, 2, 0));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Garbage, GridResourceType::No_Resource, 19, 3, 4));
-	m_deck.emplace_back(std::make_shared<PowerPlant>(CardType::Power_Plant, GridResourceType::Coal, GridResourceType::No_Resource, 20, 5, 6));
+	//open file
+	std::ifstream file;
+	file.open(filename);
 
+	if (!file)
+	{
+		std::cout << "That is an invalid file name." << std::endl;
+		return;
+	}
+	
+	char delimiter = ',';
+	//store strings seperated by comma into the vector
+	std::vector<std::string> fileStrings;
+
+	while (!file.eof())
+	{
+		std::string str;
+		getline(file, str);
+		std::stringstream stream(str);
+		//split the string from the text file and put those strings in a vector
+		while (getline(stream, str, delimiter))
+		{
+			fileStrings.push_back(str);
+		}
+	
+		//get the attributes of the power plant
+		int price = stoi(fileStrings[0]);
+		int houses = stoi(fileStrings[1]);
+		int capacity = stoi(fileStrings[2]);
+
+		GridResourceType type;
+		std::shared_ptr<PowerPlant> powerPlant = std::make_shared<PowerPlant>(CardType::Power_Plant, price, houses, capacity);
+		m_deck.emplace_back(powerPlant);
+
+		//set the types of resources used by the power plant
+		for (size_t i = 3; i < fileStrings.size(); i++)
+		{
+			if (fileStrings[i] == "coal")
+				type = GridResourceType::Coal;
+			else if (fileStrings[i] == "oil")
+				type = GridResourceType::Oil;
+			else if (fileStrings[i] == "garbage")
+				type = GridResourceType::Garbage;
+			else if (fileStrings[i] == "uranium")
+				type = GridResourceType::Uranium;
+			else
+				type = GridResourceType::No_Resource;
+
+			powerPlant->setValidResource(type);
+		}
+		fileStrings.clear();
+	}
 
 	setUpMarket();
 }
@@ -63,13 +96,13 @@ void Deck::outputMarket()
 
 void Deck::outputPowerPlant(std::shared_ptr<PowerPlant> plant)
 {
-	std::cout << "Resources needed: " << plant->getResourceTypeName(plant->getResourceType1());
-	if (plant->getResourceType2() != GridResourceType::No_Resource)
-		std::cout << ", " << plant->getResourceTypeName(plant->getResourceType2()) << ". ";
-	else
-		std::cout << ". ";
+	std::cout << "Resources needed: ";
+	for (auto resource : plant->getValidResources())
+	{
+		std::cout << plant->getResourceTypeName(resource) << ", ";
+	}
 	std::cout << "Minimum Price: " << plant->getPowerPlantPrice() << ". Houses: " << plant->getPowerPlantHouses() << ". ";
-	std::cout << "Storage Capacity: " << plant->getPowerPlantCapacity() << std::endl; 
+	std::cout << "Storage Capacity: " << plant->getPowerPlantCapacity() * 2 << std::endl; 
 }
 
 void Deck::shuffle(std::vector<std::shared_ptr<Card>>& m_deck)

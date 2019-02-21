@@ -4,8 +4,10 @@
 #include "StepCard.h"
 #include <vector>
 #include <memory>
+#include <fstream>
+#include <sstream>
 
-#define POWER_PLANT_MARKET 3
+#define POWER_PLANT_MARKET 8
 
 class Deck
 {
@@ -13,7 +15,7 @@ public:
 	Deck();
 	~Deck();
 	
-	void setUpDeck();
+	void setUpDeck(std::string filename);
 	void setUpMarket();
 	void outputMarket();
 	void outputPowerPlant(std::shared_ptr<PowerPlant> plant);
@@ -33,6 +35,8 @@ public:
 			return (std::dynamic_pointer_cast<PowerPlant>(plant1)->getPowerPlantPrice() < std::dynamic_pointer_cast<PowerPlant>(plant2)->getPowerPlantPrice());
 		}
 	};
+
+	static std::string cardsFilePath;
 
 private:
 	std::vector<std::shared_ptr<Card>> m_deck;
