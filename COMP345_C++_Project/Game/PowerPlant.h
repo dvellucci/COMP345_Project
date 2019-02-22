@@ -12,8 +12,6 @@ public:
 	void setValidResource(GridResourceType type) { m_validResources.insert(type); }
 
 	bool storeResource(GridResourceType type, int amount);
-	GridResourceType getResourceType1() { return m_resourceType; }
-	GridResourceType getResourceType2() { return m_resourceType2; }
 	std::string getResourceTypeName(GridResourceType type);
 	int getPowerPlantPrice() { return m_price; }
 	int getPowerPlantCapacity() { return m_capacity; }
@@ -23,8 +21,6 @@ public:
 
 private:
 	CardType m_cardType;
-	GridResourceType m_resourceType;
-	GridResourceType m_resourceType2;
 	std::set<GridResourceType> m_validResources;
 	//resources stored by the power plant
 	std::map<GridResourceType, int> m_storedResources; 

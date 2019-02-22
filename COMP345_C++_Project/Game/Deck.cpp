@@ -2,7 +2,7 @@
 
 std::string Deck::cardsFilePath = "Cards/resourceCardsData.txt";
 
-Deck::Deck()
+Deck::Deck() : m_powerPlantMarketSize(8), m_step3CardDrawn(false)
 {
 	m_deck.reserve(43);
 }
@@ -68,12 +68,17 @@ void Deck::setUpDeck(std::string filename)
 		fileStrings.clear();
 	}
 
+	//add the step 3 card
+	std::shared_ptr<StepCard> stepCard = std::make_shared<StepCard>(CardType::Step_3);
+	m_deck.emplace_back(stepCard);
+	fileStrings.clear();
+
 	setUpMarket();
 }
 
 void Deck::setUpMarket()
 {
-	for (int i = 0; i < POWER_PLANT_MARKET; i++)
+	for (int i = 0; i < m_powerPlantMarketSize; i++)
 	{
 		std::shared_ptr<Card> top = m_deck[0];
 		m_powerPlantMarket.push_back(top);
@@ -84,12 +89,21 @@ void Deck::setUpMarket()
 void Deck::outputMarket()
 {
 	int i = 0;
-	for (auto& plant : m_powerPlantMarket)
+	std::shared_ptr<PowerPlant> powerPlantCard = nullptr;
+	for (auto& card : m_powerPlantMarket)
 	{
-		auto powerPlant = std::dynamic_pointer_cast<PowerPlant>(plant);
-		std::cout << i << ". ";
-		outputPowerPlant(powerPlant);
-		i++;
+		if (powerPlantCard = std::dynamic_pointer_cast<PowerPlant>(card))
+		{
+			std::cout << i << ". ";
+			outputPowerPlant(std::dynamic_pointer_cast<PowerPlant>(card));
+			i++;
+		}
+		else
+		{
+			std::cout << i << ". Step 3 Card." << std::endl;
+			i++;
+		}
+		
 	}
 	std::cout << std::endl;
 }
@@ -105,9 +119,21 @@ void Deck::outputPowerPlant(std::shared_ptr<PowerPlant> plant)
 	std::cout << "Storage Capacity: " << plant->getPowerPlantCapacity() * 2 << std::endl; 
 }
 
-void Deck::shuffle(std::vector<std::shared_ptr<Card>>& m_deck)
+void Deck::shuffleMainDeck()
+{
+}
+
+void Deck::shuffleMarket(std::vector<std::shared_ptr<Card>>& m_deck)
 {
 	
+}
+
+void Deck::removeSmallestPowerPlant()
+{
+	if (m_powerPlantMarket.size() > 0)
+	{
+		m_powerPlantMarket.erase(m_powerPlantMarket.begin());
+	}
 }
 
 void Deck::removePlantFromMarket(int index)
@@ -115,21 +141,59 @@ void Deck::removePlantFromMarket(int index)
 	m_powerPlantMarket.erase(m_powerPlantMarket.begin() + index);
 }
 
+void Deck::removeStep3Card()
+{
+	std::shared_ptr<StepCard> tempCard = nullptr;
+	for (size_t i = 0; i < m_powerPlantMarket.size(); i++)
+	{
+		if (tempCard = std::dynamic_pointer_cast<StepCard>(m_powerPlantMarket[i]))
+		{
+			m_powerPlantMarket.erase(m_powerPlantMarket.begin() + i);
+			return;
+		}
+	}
+}
+
+//when the game is in step 3, change the size of the power plant market
+void Deck::setStep3Market()
+{
+	std::cout << "The market has been re-adjusted for step 3." << std::endl;
+	m_powerPlantMarketSize = 6;
+	while (m_powerPlantMarket.size() > m_powerPlantMarketSize)
+	{
+		removeSmallestPowerPlant();
+		removeStep3Card();
+	}
+	//fill up the market
+	drawCard();
+}
+
 //draw a card and at it to the power plant market
 bool Deck::drawCard()
 {
 	std::shared_ptr<PowerPlant> powerPlant = nullptr;
-	if (m_powerPlantMarket.size() < POWER_PLANT_MARKET && m_deck.size() > 0)
+	std::shared_ptr<StepCard> stepCard = nullptr;
+	while(m_powerPlantMarket.size() < m_powerPlantMarketSize && m_deck.size() > 0)
 	{
 		std::shared_ptr<Card> topCard = m_deck[0];
-
 		m_powerPlantMarket.push_back(topCard);
 		m_deck.erase(m_deck.begin());
 
-		//sort the power plants
-		std::sort(m_powerPlantMarket.begin(), m_powerPlantMarket.end(), PowerPlantPrice());
-
-		//TODO FOR LATER: Check for step 3 card
+		if (powerPlant = std::dynamic_pointer_cast<PowerPlant>(topCard))
+		{
+			//sort the power plants
+			std::sort(m_powerPlantMarket.begin(), m_powerPlantMarket.end(), PowerPlantPrice());
+			return true;
+		}
+		
+		//check for step 3 card
+		if (stepCard = std::dynamic_pointer_cast<StepCard>(topCard))
+		{
+			std::cout << "The step 3 card has been drawn." << std::endl << std::endl;
+			m_step3CardDrawn = true;
+			m_powerPlantMarketSize = 7;
+			return true;
+		}
 
 		return true;
 	}

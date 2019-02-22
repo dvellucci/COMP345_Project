@@ -82,8 +82,6 @@ void Player::replacePowerPlant(std::shared_ptr<Deck> deckManager, int slotIndex,
 	//give the player the new power plant and remove it from the market
 	m_powerPlants.push_back(deckManager->getPowerPlantMarket()[slotIndex]);
 	deckManager->removePlantFromMarket(slotIndex);
-
-	//do transfer of resources here
 }
 
 
@@ -101,6 +99,17 @@ bool Player::purchaseResource(std::shared_ptr<GridResourceMarket> market, std::s
 		return true;
 	}
 
+	return false;
+}
+
+bool Player::doesPlayerOwnCity(std::string city)
+{
+	std::transform(city.begin(), city.end(), city.begin(), ::tolower);
+	for (auto& citySlot : m_ownedCitySlots)
+	{
+		if (citySlot->getName() == city)
+			return true;
+	}
 	return false;
 }
 

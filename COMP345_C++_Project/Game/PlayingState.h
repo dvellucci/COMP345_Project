@@ -8,6 +8,7 @@
 #include "GameBoard/MapManager.h"
 #include "GridResourceMarket.h"
 #include "Deck.h"
+#include "GameSettings.h"
 #include <vector>
 #include <fstream>
 #include <algorithm>
@@ -50,11 +51,16 @@ public:
 	void phase3BuyResources1();
 	void phase3BuyResources2(int amount);
 
+	//phase 4: the buying cities phase
 	void doPhase4();
 	void phase4Start();
 	void phase4BuyCities1();
+	void phase4BuyCities2(bool isBuying, std::string city, int slot);
+	void phase4End();
 
-	void buildingPhase();
+	void doPhase5();
+	void phase5Start();
+	void endPhase5();
 	void bureaucracyPhase();
 
 	void printGameInfo();
@@ -77,6 +83,9 @@ private:
 	//managers for the map and market
 	std::shared_ptr<MapManager> m_mapManager;
 	std::shared_ptr<GridResourceMarket> m_gridResourceMarket;
+
+	//game settings object
+	std::shared_ptr<GameSettings> m_gameSettings;
 
 	//the deck as well as a vector to hold the current power plant cards players can bid on
 	std::shared_ptr<Deck> m_deckManager;
