@@ -25,13 +25,21 @@ public:
 		std::string m_cityName;
 
 		struct CitySlot {
-			CitySlot(int type, std::string name) : m_type(type), m_name(name) { };
+		public:
+			CitySlot(int type, std::string name) : m_cost(type), m_name(name) { };
 			~CitySlot() {};
+		
+			void setIsOwned(bool owned) { m_isOwned = owned; }
+			int getCost() { return m_cost; }
+			bool getIsOwned() { return m_isOwned; }
+			std::string getName() { return m_name; }
+			sf::Sprite& getSlotSprite() { return m_slotSprite; }
 
-			int m_type;
+			sf::Sprite m_slotSprite;
+		private:
+			int m_cost;
 			std::string m_name;
 			bool m_isOwned = false;
-			sf::Sprite m_slotSprite;
 		};
 
 		std::shared_ptr<CitySlot> citySlots[SLOTS];
@@ -40,10 +48,11 @@ public:
 		std::vector<std::shared_ptr<Connection>>& getConnections() { return m_connections; }
 	};
 
+	void displayCities();
 	void setMapSprite();
+
 	//creates a city object and initializes the 3 slots of the city
 	std::shared_ptr<Map::City> setCity(std::string m_cityName, float x1, float y1, float x2, float y2, float x3, float y3);
-	void displayCities();
 
 	std::map<std::string, std::shared_ptr<City>>& getCities() { return m_cities; }
 	std::shared_ptr<City> getCityByName(std::string name);

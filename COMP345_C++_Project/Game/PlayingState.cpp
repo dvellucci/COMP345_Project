@@ -12,6 +12,9 @@ PlayingState::PlayingState() : m_quit(false), m_playing(false), m_firstTurn(true
 
 	//set up the number of players and the map that will be played
 	setUpGame();
+
+	//set the game settings based on how many players there will be
+	m_gameSettings = std::make_shared<GameSettings>(m_players.size());
 }
 
 PlayingState::~PlayingState()
@@ -43,10 +46,10 @@ void PlayingState::handle_events(sf::RenderWindow* mainWindow, sf::Event & currE
 				for (auto& cityPair : m_mapManager->getMap()->getCities())
 				{
 					auto city = cityPair.second;
-					if (city->citySlots[0]->m_slotSprite.getGlobalBounds().contains((float)sf::Mouse::getPosition(*mainWindow).x, (float)sf::Mouse::getPosition(*mainWindow).y))
+					if (city->citySlots[0]->getSlotSprite().getGlobalBounds().contains((float)sf::Mouse::getPosition(*mainWindow).x, (float)sf::Mouse::getPosition(*mainWindow).y))
 					{
-						city->citySlots[0]->m_name[0] = toupper(city->citySlots[0]->m_name[0]);
-						m_mapManager->getMap()->getCityText().setString(city->citySlots[0]->m_name);
+						city->citySlots[0]->getName()[0] = toupper(city->citySlots[0]->getName()[0]);
+						m_mapManager->getMap()->getCityText().setString(city->citySlots[0]->getName());
 					}
 				}
 			}
@@ -80,7 +83,7 @@ void PlayingState::draw(sf::RenderWindow *mainWindow)
 	{
 		for (auto& citySlot : player->getOwnedCities())
 		{
-			mainWindow->draw(citySlot->m_slotSprite);
+			mainWindow->draw(citySlot->getSlotSprite());
 		}
 	}
 
@@ -231,9 +234,11 @@ void PlayingState::phase2StartAuction()
 	}
 	else
 	{
+		std::shared_ptr<PowerPlant> tempCard = nullptr;	
 		std::cout << "Pick a plant to bid on by entering it's corresponding number." << std::endl;
 		m_deckManager->outputMarket();
 		unsigned int index = 0;
+		auto tempCard2 = std::dynamic_pointer_cast<PowerPlant>(m_deckManager->getPowerPlantMarket()[index]);
 		while (!(std::cin >> index) || index < 0 || index >= m_deckManager->getPowerPlantMarket().size())
 		{
 			std::cin.clear();
@@ -371,7 +376,7 @@ void PlayingState::phase2NextBid(int bid)
 		m_canPlayerBuy[m_currentPlayer.get()] = false;
 
 		//give the player the new power plant
-		if(m_currentPlayer->getPowerPlants().size() == 3)
+		if(m_currentPlayer->getPowerPlants().size() == m_gameSettings->getMaxPowerPlants())
 			m_currentPlayer->replacePowerPlant(m_deckManager, m_powerPlantIndex, m_currentBid);
 		else
 			m_currentPlayer->buyPowerPlant(m_deckManager, m_powerPlantIndex, m_currentBid);
@@ -410,9 +415,17 @@ return phase2StartAuction();
 void PlayingState::phase2End()
 {
 	//check for step 3 card
+	if (m_deckManager->drewStep3Card())
+	{
+		m_deckManager->setStep3Market();
+		m_deckManager->shuffleMainDeck();
+		m_gameSettings->setStep(3);
+	}
 
 	m_firstTurn = false;
 	m_powerPlantIndex = 0;
+
+	m_deckManager->outputMarket();
 	//start phase 3
 	doPhase3();
 }
@@ -523,7 +536,8 @@ void PlayingState::doPhase4()
 	std::cout << "Press enter to continue to phase 4." << std::endl << std::endl;
 	m_playing = false;
 	while (!m_playing);
-	std::cout << "Phase 3 of the turn will now begin." << std::endl << std::endl;
+	printGameInfo();
+	std::cout << "Phase 4 of the turn will now begin." << std::endl << std::endl;
 	phase4Start();
 }
 
@@ -531,17 +545,146 @@ void PlayingState::phase4Start()
 {
 	updatePlayerOrder(true);
 	m_currentPlayer = m_playerOrder[0];
+	phase4BuyCities1();
 }
 
 void PlayingState::phase4BuyCities1()
 {
-	std::cout << "Type the name of the city to buy." << std::endl;
-	std::string city;
-	while (!(std::cin >> city) || m_mapManager->getMap()->getCityByName(city)->citySlots[0]->m_isOwned)
+	//check if player would like to buy a city
+	std::cout << "Player " << m_currentPlayer->getPlayerNumber() << "'s turn to buy a city." << std::endl;
+	std::cout << "Would you like to buy a city? Enter 1 for yes, 0 for no." << std::endl;
+	bool isBuying = false;
+	while (!(std::cin >> isBuying) || (isBuying != 0 && isBuying != 1))
 	{
 		std::cin.clear();
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		std::cout << "Invalid City. Enter a valid city." << std::endl;
+		std::cout << "Invalid Input. Enter a 1 for yes, 0 for no." << std::endl;
+	}
+
+	if (!isBuying)
+		return phase4BuyCities2(false, "", 0);
+
+	std::cout << "Type the name of the city to buy." << std::endl;
+	std::string city;
+	auto tempCities = m_mapManager->getMap()->getCities();
+	std::transform(city.begin(), city.end(), city.begin(), ::tolower);
+	while (!(std::cin >> city) || tempCities.find(city) == tempCities.end())
+	{
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cout << "Invalid Input. Enter a valid city." << std::endl;
+	}
+
+	//check if the player has a house in the specified city
+	if (m_currentPlayer->doesPlayerOwnCity(city))
+	{
+		std::cout << "You already own a slot in that city. Pick another city" << std::endl;
+		return phase4BuyCities1();
+	}
+
+	std::cout << "Enter the number of the slot you would like to purchase in the city" << std::endl;
+	std::cout << "During phase " << m_gameSettings->getStep() << " of the game, " 
+		<< m_gameSettings->getStep() << " slots are available." << std::endl;
+	int slot = 0;
+	while (!(std::cin >> slot) || (slot != 1 && slot != 2 && slot != 3))
+	{
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cout << "Invalid slot." << std::endl;
+	}
+	slot -= 1; //decrement the slot value by 1 to get the proper index of the city slot
+
+	//check if the city slot is ooccupied
+	auto tempCitySlot = m_mapManager->getMap()->getCities().find(city)->second->citySlots[slot];
+	if (tempCitySlot->getIsOwned())
+	{
+		std::cout << "That city slot is already occupied." << std::endl;
+		return phase4BuyCities1();
+	}
+
+	phase4BuyCities2(isBuying, city, slot);
+}
+
+void PlayingState::phase4BuyCities2(bool isBuying, std::string city, int slot)
+{
+	//if the player decides to not buy, check for the next player
+	if (!isBuying)
+	{
+		m_currentPlayer = m_playerOrder[getNextPlayer()];
+		//end phase 4 if the next player is the starting player
+		if (m_currentPlayer.get() == m_playerOrder[0].get())
+		{
+			return phase4End();
+		}
+		return phase4BuyCities1();
+	}
+
+	auto tempCity = m_mapManager->getMap()->getCityByName(city);
+
+	//check if the slot in the city is available in the current step 
+	if (slot > m_gameSettings->getStep())
+	{
+		std::cout << "That slot is not available during step " << m_gameSettings->getStep() << "." << std::endl;
+		return phase4BuyCities1();
+	}
+
+	auto citySlot = tempCity->citySlots[slot];
+	//get cost to connect to that city
+	int cost;
+	if (m_currentPlayer->getOwnedCities().empty())
+	{
+		cost = citySlot->getCost();
+	}
+	else
+	{
+		cost = citySlot->getCost() + m_mapManager->getShortestPathFromPlayer(m_currentPlayer, citySlot->getName());
+	}
+
+	//check if the current player has enough elektro
+	if (m_currentPlayer->getElektro() < cost)
+	{
+		std::cout << "You don't have enough elektro for " << citySlot->getName() << "." << std::endl;
+		return phase4BuyCities1();
+	}
+
+	//the player can buy the city
+	m_currentPlayer->setElektro(cost);
+	m_currentPlayer->getOwnedCities().push_back(citySlot);
+	citySlot->m_slotSprite.setTexture(m_currentPlayer->getPlayerTexture());
+	citySlot->setIsOwned(true);
+	std::cout << "Player " << m_currentPlayer->getPlayerNumber() << " has " << m_currentPlayer->getElektro() << " elektro remaining." << std::endl << std::endl;
+
+	//check if the player would like to buy another city
+	return phase4BuyCities1();
+}
+
+void PlayingState::phase4End()
+{
+	std::cout << "Press enter to continue to phase 5." << std::endl;
+	m_playing = false;
+	while (!m_playing);
+	std::cout << "Phase 5 of the turn will now begin." << std::endl;
+}
+
+void PlayingState::doPhase5()
+{
+	printGameInfo();
+	m_playing = false;
+	while (!m_playing);
+}
+
+void PlayingState::phase5Start()
+{
+}
+
+void PlayingState::endPhase5()
+{
+	//if the step 3 card was drawn, 
+	if (m_deckManager->drewStep3Card())
+	{
+		m_deckManager->setStep3Market();
+		m_deckManager->shuffleMainDeck();
+		m_gameSettings->setStep(3);
 	}
 }
 

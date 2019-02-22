@@ -31,10 +31,10 @@ std::shared_ptr<Map::City>  Map::setCity(std::string m_cityName, float x1, float
 	city->citySlots[2] = slot3;
 
 	//set city slot coordinates
-	city->citySlots[0]->m_slotSprite.setPosition(x1, y1);
-	city->citySlots[0]->m_slotSprite.setTexture(ResourceHolder::Instance()->get(Textures::Default));
-	city->citySlots[1]->m_slotSprite.setPosition(x2, y2);
-	city->citySlots[2]->m_slotSprite.setPosition(x3, y3);
+	city->citySlots[0]->getSlotSprite().setPosition(x1, y1);
+	city->citySlots[0]->getSlotSprite().setTexture(ResourceHolder::Instance()->get(Textures::Default));
+	city->citySlots[1]->getSlotSprite().setPosition(x2, y2);
+	city->citySlots[2]->getSlotSprite().setPosition(x3, y3);
 
 	m_cities.emplace(make_pair(m_cityName, city));
 

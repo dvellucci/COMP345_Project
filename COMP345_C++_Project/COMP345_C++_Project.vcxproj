@@ -132,6 +132,7 @@
     <ClCompile Include="Game\GameBoard\Connection.cpp" />
     <ClCompile Include="Game\GameBoard\Map.cpp" />
     <ClCompile Include="Game\GameBoard\MapManager.cpp" />
+    <ClCompile Include="Game\GameSettings.cpp" />
     <ClCompile Include="Game\GameState.cpp" />
     <ClCompile Include="Game\GridResource.cpp" />
     <ClCompile Include="Game\IntroState.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\GameBoard\Connection.h" />
     <ClInclude Include="Game\GameBoard\MapManager.h" />
+    <ClInclude Include="Game\GameSettings.h" />
     <ClInclude Include="Game\GameState.h" />
     <ClInclude Include="Game\GameStates.h" />
     <ClInclude Include="Game\IntroState.h" />
