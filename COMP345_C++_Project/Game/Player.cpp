@@ -40,7 +40,7 @@ void Player::doPlayerTurn()
 	return;
 }
 
-void Player::setElektro(int amountSpent)
+void Player::spendElektro(int amountSpent)
 {
 	m_elektro = m_elektro - amountSpent;
 }
@@ -48,14 +48,14 @@ void Player::setElektro(int amountSpent)
 
 void Player::buyPowerPlant(std::shared_ptr<Deck> deckManager, int slotIndex, int price)
 {
-	setElektro(price);
+	spendElektro(price);
 	m_powerPlants.push_back(deckManager->getPowerPlantMarket()[slotIndex]);
 	deckManager->removePlantFromMarket(slotIndex);
 }
 
 void Player::replacePowerPlant(std::shared_ptr<Deck> deckManager, int slotIndex, int price)
 {
-	setElektro(price);
+	spendElektro(price);
 
 	//ask the player which plant to replace
 	std::cout << "Select a power plant to replace. " << std::endl;
@@ -84,6 +84,40 @@ void Player::replacePowerPlant(std::shared_ptr<Deck> deckManager, int slotIndex,
 	deckManager->removePlantFromMarket(slotIndex);
 }
 
+void Player::displayPowerPlant(std::shared_ptr<GridResourceMarket> market, std::shared_ptr<PowerPlant> plant)
+{
+	std::cout << "Resources needed: ";
+	for (auto resource : plant->getValidResources())
+	{
+		std::cout << plant->getResourceTypeName(resource) << ", ";
+	}
+	std::cout << "Houses:" << plant->getPowerPlantHouses() << ", Storage Capacity: " << plant->getPowerPlantCapacity() << " Stored Resources: ";
+	for (auto temp2 : plant->getStoredResources())
+	{
+		std::cout << temp2.second << " " << market->getResourceType(temp2.first) << ". ";
+	}
+	std::cout << std::endl;
+}
+
+void Player::listPlayerPowerPlants(std::shared_ptr<GridResourceMarket> market)
+{
+	int index = 0;
+	for (auto temp : m_powerPlants)
+	{
+		auto plant = std::dynamic_pointer_cast<PowerPlant>(temp);
+		std::cout << index << ". ";
+		displayPowerPlant(market, plant);
+		index++;
+	}
+}
+
+
+std::shared_ptr<PowerPlant> Player::getPowerPlant(int index)
+{
+	auto card = m_powerPlants[index];
+	auto powerPlant = std::dynamic_pointer_cast<PowerPlant>(card);
+	return powerPlant;
+}
 
 bool Player::purchaseResource(std::shared_ptr<GridResourceMarket> market, std::shared_ptr<PowerPlant> plant, GridResourceType type, int amount)
 {

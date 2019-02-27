@@ -15,10 +15,13 @@ public:
 	~Player();
 
 	void doPlayerTurn();
-	void setElektro(int amountSpent);
+	void setElektro(int elektro) { m_elektro = elektro; }
+	void spendElektro(int amountSpent);
 
 	void buyPowerPlant(std::shared_ptr<Deck> deck, int slotIndex, int price);
 	void replacePowerPlant(std::shared_ptr<Deck> deck, int slotIndex, int price);
+	void displayPowerPlant(std::shared_ptr<GridResourceMarket> market, std::shared_ptr<PowerPlant> plant);
+	void listPlayerPowerPlants(std::shared_ptr<GridResourceMarket> market);
 
 	int getPlayerNumber() { return m_playerNumber; }
 	int getElektro() { return m_elektro; }
@@ -27,6 +30,7 @@ public:
 
 	std::vector<std::shared_ptr<Map::City::CitySlot>>& getOwnedCities() { return m_ownedCitySlots; }
 	std::vector<std::shared_ptr<Card>>& getPowerPlants() { return m_powerPlants; }
+	std::shared_ptr<PowerPlant> getPowerPlant(int index);
 
 	bool purchaseResource(std::shared_ptr<GridResourceMarket> market, std::shared_ptr<PowerPlant> plant, GridResourceType type, int amount);
 	bool doesPlayerOwnCity(std::string city);

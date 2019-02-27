@@ -51,6 +51,16 @@ void PlayingState::handle_events(sf::RenderWindow* mainWindow, sf::Event & currE
 						city->citySlots[0]->getName()[0] = toupper(city->citySlots[0]->getName()[0]);
 						m_mapManager->getMap()->getCityText().setString(city->citySlots[0]->getName());
 					}
+					else if (city->citySlots[1]->getSlotSprite().getGlobalBounds().contains((float)sf::Mouse::getPosition(*mainWindow).x, (float)sf::Mouse::getPosition(*mainWindow).y))
+					{
+						city->citySlots[1]->getName()[1] = toupper(city->citySlots[1]->getName()[1]);
+						m_mapManager->getMap()->getCityText().setString(city->citySlots[1]->getName());
+					}
+					else if (city->citySlots[2]->getSlotSprite().getGlobalBounds().contains((float)sf::Mouse::getPosition(*mainWindow).x, (float)sf::Mouse::getPosition(*mainWindow).y))
+					{
+						city->citySlots[2]->getName()[2] = toupper(city->citySlots[2]->getName()[2]);
+						m_mapManager->getMap()->getCityText().setString(city->citySlots[2]->getName());
+					}
 				}
 			}
 		break;
@@ -137,8 +147,7 @@ void PlayingState::setUpMap()
 	//parse the map data and the set the coordinates of the regions
 	std::string mapStr = m_mapManager->getAvailableMaps()[mapNum - 1];
 	std::transform(mapStr.begin(), mapStr.end(), mapStr.begin(), ::tolower);
-	//this will be "Maps/" + mapStr + ".txt"
-	m_mapManager->loadMap("Maps/turkey.txt");
+	m_mapManager->loadMap("Maps/" + mapStr + ".txt");
 
 	//load map texture
 	ResourceHolder::Instance()->loadTexture(Textures::Map, "Textures/Maps/" + mapStr + ".png");
@@ -199,7 +208,7 @@ void PlayingState::doPhase2()
 void PlayingState::phase2Start()
 {
 	//sort the player
-	std::cout << "Beginning step 2. The power plant auction phase." << std::endl << std::endl;;
+	std::cout << "Beginning phase 2. The power plant auction phase." << std::endl << std::endl;;
 
 	//set the attribute that the players can bid to true
 	for (auto& player : m_playerOrder)
@@ -235,7 +244,8 @@ void PlayingState::phase2StartAuction()
 	else
 	{
 		std::shared_ptr<PowerPlant> tempCard = nullptr;	
-		std::cout << "Pick a plant to bid on by entering it's corresponding number." << std::endl;
+		std::cout << std::endl;
+		std::cout << "Pick a plant to bid on by entering it's corresponding number." << std::endl << std::endl;
 		m_deckManager->outputMarket();
 		unsigned int index = 0;
 		auto tempCard2 = std::dynamic_pointer_cast<PowerPlant>(m_deckManager->getPowerPlantMarket()[index]);
@@ -454,7 +464,7 @@ void PlayingState::phase3BuyResources1()
 	//get the next power plant of the player
 	auto temp = m_currentPlayer->getPowerPlants()[m_powerPlantIndex];
 	auto powerPlant = std::dynamic_pointer_cast<PowerPlant>(temp);
-
+	
 	//get the resource of the power plant
 	auto tempSet = powerPlant->getValidResources();
 	std::vector<GridResourceType> resources;
@@ -463,7 +473,8 @@ void PlayingState::phase3BuyResources1()
 	std::cout << "Player " << m_currentPlayer->getPlayerNumber() << "'s turn to buy resources." << std::endl << std::endl;
 
 	std::cout << "Current power plant: ";
-	m_deckManager->outputPowerPlant(powerPlant);
+	//m_deckManager->outputPowerPlant(powerPlant);
+	m_currentPlayer->displayPowerPlant(m_gridResourceMarket, powerPlant);
 	std::cout << std::endl;
 
 	if (resources[m_resourceIndex] != GridResourceType::No_Resource)
@@ -648,7 +659,7 @@ void PlayingState::phase4BuyCities2(bool isBuying, std::string city, int slot)
 	}
 
 	//the player can buy the city
-	m_currentPlayer->setElektro(cost);
+	m_currentPlayer->spendElektro(cost);
 	m_currentPlayer->getOwnedCities().push_back(citySlot);
 	citySlot->m_slotSprite.setTexture(m_currentPlayer->getPlayerTexture());
 	citySlot->setIsOwned(true);
@@ -660,25 +671,279 @@ void PlayingState::phase4BuyCities2(bool isBuying, std::string city, int slot)
 
 void PlayingState::phase4End()
 {
+	//remove the lowest power plant(s) if necessary
+	unsigned int mostHouses = 0;
+	for (auto player : m_players)
+	{
+		if (player->getOwnedCities().size() > mostHouses)
+			mostHouses = player->getOwnedCities().size();
+	}
+	while (std::dynamic_pointer_cast<PowerPlant>(m_deckManager->getPowerPlantMarket()[0])->getPowerPlantPrice() <= mostHouses)
+	{
+		m_deckManager->removeSmallestPowerPlant();
+		m_deckManager->drawCard();
+	}
+
+	//check if we enter step 3
+	if (m_deckManager->drewStep3Card())
+	{
+		m_deckManager->setStep3Market();
+		m_deckManager->shuffleMainDeck();
+		m_gameSettings->setStep(3);
+	}
+
+
 	std::cout << "Press enter to continue to phase 5." << std::endl;
 	m_playing = false;
 	while (!m_playing);
-	std::cout << "Phase 5 of the turn will now begin." << std::endl;
+	doPhase5();
 }
 
 void PlayingState::doPhase5()
 {
 	printGameInfo();
-	m_playing = false;
-	while (!m_playing);
+	std::cout << "Phase 5 of the turn will now begin." << std::endl << std::endl;
+
+	updatePlayerOrder(false);
+	m_currentPlayer = m_playerOrder[0];
+
+	//check if we enter step 2
+	if (m_gameSettings->getStep() == 1)
+	{
+		for (auto player : m_players)
+		{
+			if (player->getOwnedCities().size() >= m_gameSettings->getStep2Cities())
+			{
+				m_gameSettings->setStep(2);
+				m_deckManager->removeSmallestPowerPlant();
+				m_deckManager->drawCard();
+				std::cout << "The game is now in phase 2!" << std::endl;
+				break;
+			}
+		}
+	}
+
+	m_poweredCities = 0;
+	phase5PowerCities1();
 }
 
-void PlayingState::phase5Start()
+void PlayingState::phase5PowerCities1()
 {
+	std::cout << std::endl;
+	std::cout << "Player " << m_currentPlayer->getPlayerNumber() << "'s power plants." << std::endl << std::endl;
+	int count = 0;
+	for (auto card : m_currentPlayer->getPowerPlants())
+	{
+		auto powerPlant = std::dynamic_pointer_cast<PowerPlant>(card);
+		//std::cout << count << ". ";
+		//m_deckManager->outputPowerPlant(powerPlant);
+		m_currentPlayer->listPlayerPowerPlants(m_gridResourceMarket);
+		count++;
+	}
+
+	std::shared_ptr<PowerPlant> powerPlant = nullptr;
+
+	std::cout << "Would you like to use a power plant? Enter 1 for yes, 0 for no." << std::endl;
+	bool usePlant = false;
+	while (!(std::cin >> usePlant) || (usePlant != 0 && usePlant != 1))
+	{
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cout << "Invalid input. Enter 1 for yes, 0 for no" << std::endl;
+	}
+
+	if (!usePlant)
+		return phase5PowerCities2(powerPlant);
+
+	std::cout << "Which power plant would you like to use?" << std::endl;
+	unsigned int index;
+	while (!(std::cin >> index) || index < 0 || index > m_currentPlayer->getPowerPlants().size())
+	{
+		std::cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cout << "Invalid input for a power plant." << std::endl;
+	}
+
+	auto temp = m_currentPlayer->getPowerPlants()[index];
+	powerPlant = std::dynamic_pointer_cast<PowerPlant>(temp);
+	phase5PowerCities2(powerPlant);
+}
+
+void PlayingState::phase5PowerCities2(std::shared_ptr<PowerPlant> powerPlant)
+{
+	//check if the player would like to use the power plant
+	if (powerPlant)
+	{
+		//check if the power plant was already powered
+		if (std::find(m_usedPowerPlants.begin(), m_usedPowerPlants.end(), powerPlant) != m_usedPowerPlants.end())
+		{
+			std::cout << "This power plant was already used to power cities." << std::endl;
+			return phase5PowerCities1();
+		}
+		m_usedPowerPlants.push_back(powerPlant);
+	}
+
+	//if the player decides to not use power plants
+	if (!powerPlant)
+	{
+		//make sure the player does not power more houses than he owns
+		int numOfHouses = m_currentPlayer->getOwnedCities().size();
+		m_poweredCities = std::min(numOfHouses, m_poweredCities);
+
+		std::cout << std::endl;
+		std::cout << "Player " << m_currentPlayer->getPlayerNumber() << " powered " << m_poweredCities << " cities." << std::endl;
+		std::cout << "Player " << m_currentPlayer->getPlayerNumber() << " earns " << m_gameSettings->getElektroPayment(m_poweredCities) << " elektro." << std::endl;
+		std::cout << std::endl;
+
+		//set the elektro of the player
+		m_currentPlayer->setElektro(m_currentPlayer->getElektro() + m_gameSettings->getElektroPayment(m_poweredCities));
+
+		//if a player has required amount of cities to win, add as potential winner
+		if (m_currentPlayer->getOwnedCities().size() >= m_gameSettings->getCitiesToEnd())
+		{
+			m_gameOver = true;
+			m_potentialWinners.push_back(m_currentPlayer);
+		}
+
+		//reset the used power plants vector for the next player
+		m_usedPowerPlants.clear();
+
+		//check for next player
+		m_currentPlayer = m_playerOrder[getNextPlayer()];
+		if (m_currentPlayer.get() == m_playerOrder[0].get())
+		{
+			//end phase 5 if there are no more players
+			return phase5Bureaucracy();
+		}
+		
+		//let the next player power some cities
+		return phase5PowerCities1();
+	}
+
+	//if the power plant has only 1 resource, consume
+	if (powerPlant->getValidResources().size() == 1)
+	{
+		//if the power plant does not require resources
+		if (powerPlant->getValidResources()[0] == GridResourceType::No_Resource)
+		{
+			m_poweredCities += powerPlant->getPowerPlantHouses();
+			std::cout << "No resources required by power plant ";
+			m_deckManager->outputPowerPlant(powerPlant);
+			return phase5PowerCities1();
+		}
+
+		auto resourceType = powerPlant->getValidResources()[0];
+		if (powerPlant->consumeResource(resourceType, powerPlant->getPowerPlantCapacity()))
+		{
+			m_poweredCities += powerPlant->getPowerPlantHouses();
+			std::cout << "Resources consumed by power plant ";
+			m_deckManager->outputPowerPlant(powerPlant);
+		}
+		else
+		{
+			std::cout << "This power plant does not have enough resources to consume." << std::endl;
+		}
+	}
+	else 
+	{
+		//Make user pick which resources to use
+		return chooseResourceToConsume1(powerPlant);
+	}
+
+	//let the player pick another power plant
+	return phase5PowerCities1();
+}
+
+void PlayingState::chooseResourceToConsume1(std::shared_ptr<PowerPlant> powerPlant)
+{
+	auto tempMap = powerPlant->getStoredResources();
+	int amount = 0;
+	for (auto temp : tempMap)
+	{
+		int num = 0;
+		auto resource = temp.first;
+		std::cout << "How many " << m_gridResourceMarket->getResourceType(resource) << " will you consume?" << std::endl;
+		while (!(std::cin >> num) || num > powerPlant->getNumOfPlacedResourcesByType(resource) || num < 0)
+		{
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cout << "This power plant does not have " << num << " m_gridResourceMarket->getResourceType(resource) to consume." << std::endl;
+		}
+
+		powerPlant->consumeResource(resource, num);
+	}
+	
+	m_poweredCities += powerPlant->getPowerPlantHouses();
+	return phase5PowerCities1();
+}
+
+void PlayingState::chooseResourceToConsume2(int amount)
+{
+
+}
+
+void PlayingState::phase5Bureaucracy()
+{
+	if (m_gameOver)
+	{
+		if (m_potentialWinners.size() == 1)
+		{
+			m_winner = m_potentialWinners[0];
+		}
+		else
+		{
+			//player with the most elektro wins
+			int maxElektro = 0;
+			for (auto player : m_potentialWinners)
+			{
+				if (player->getElektro() > maxElektro)
+				{
+					m_winner = player;
+					maxElektro = player->getElektro();
+				}
+			}
+		}
+		gameOver();
+	}
+
+	//if in phase 1 or 2, update the power plant market by removing the highest card 
+	//and drawing a new card
+	if (m_gameSettings->getStep() == 1 || m_gameSettings->getStep() == 2)
+	{
+		m_deckManager->removeHighestPlantFromMarket();
+		m_deckManager->drawCard();
+	}
+
+	//check if the step 3 card was drawn
+	if (m_deckManager->drewStep3Card())
+	{
+		m_deckManager->setStep3Market();
+		m_deckManager->shuffleMainDeck();
+		m_gameSettings->setStep(3);
+		std::cout << "The game is now in step 3." << std::endl;
+	}
+
+	//resupply the resource market
+	int amount = std::min(m_gameSettings->getCoalToSupply(), getResourcesInSupply(GridResourceType::Coal, m_players));
+	m_gridResourceMarket->reSupplyResource(GridResourceType::Coal, amount);
+
+	int oilAmount = std::min(m_gameSettings->getOilToSupply(), getResourcesInSupply(GridResourceType::Oil, m_players));
+	m_gridResourceMarket->reSupplyResource(GridResourceType::Oil, oilAmount);
+	
+	int garbageAmount = std::min(m_gameSettings->getGarbageToSupply(), getResourcesInSupply(GridResourceType::Garbage, m_players));
+	m_gridResourceMarket->reSupplyResource(GridResourceType::Garbage, garbageAmount);
+
+	int uraniumAmount = std::min(m_gameSettings->getUraniumToSupply(), getResourcesInSupply(GridResourceType::Uranium, m_players));
+	m_gridResourceMarket->reSupplyResource(GridResourceType::Uranium, uraniumAmount);
+
+	std::cout << "The market has been re-supplied." << std::endl;
+
+	return endPhase5();
 }
 
 void PlayingState::endPhase5()
 {
+
 	//if the step 3 card was drawn, 
 	if (m_deckManager->drewStep3Card())
 	{
@@ -686,11 +951,24 @@ void PlayingState::endPhase5()
 		m_deckManager->shuffleMainDeck();
 		m_gameSettings->setStep(3);
 	}
+
+	//print the status of each player
+	printGameInfo();
+
+	std::cout << "Press enter to do the next turn." << std::endl;
+	m_playing = false;
+	while (!m_playing);
+	std::cout << "Phase 1 of the next turn will begin." << std::endl;
+	phase1Start();
 }
 
-void PlayingState::bureaucracyPhase()
+void PlayingState::gameOver()
 {
+	std::cout << "The game is over. The winner is Player " << m_winner->getPlayerNumber() << std::endl;
+	m_playing = false;
+	while (!m_playing);
 }
+
 
 //print the information of each player
 void PlayingState::printGameInfo()
@@ -703,10 +981,7 @@ void PlayingState::printGameInfo()
 		std::cout << "Has " << player->getElektro() << " elektro." << std::endl;
 		std::cout << "Owns " << player->getOwnedCities().size() << " cities." << std::endl;
 		std::cout << "Power plants: " << std::endl;
-		for (auto& plant : player->getPowerPlants())
-		{
-			m_deckManager->outputPowerPlant(std::dynamic_pointer_cast<PowerPlant>(plant));		
-		}
+		player->listPlayerPowerPlants(m_gridResourceMarket);
 		std::cout << std::endl;
 	}
 }
@@ -715,3 +990,37 @@ int PlayingState::getNextPlayer()
 {
 	return (std::distance(m_playerOrder.begin(), std::find(m_playerOrder.begin(), m_playerOrder.end(), m_currentPlayer)) + 1) % m_playerOrder.size();
 }
+
+//gets the number of a resource type stored by the players
+int PlayingState::getNumOfResourcesOwned(GridResourceType type, std::vector<std::shared_ptr<Player>> players)
+{
+	int amount = 0;
+	for (auto player : players)
+	{
+		for (auto plant : player->getPowerPlants())
+		{
+			auto powerPlant = std::dynamic_pointer_cast<PowerPlant>(plant);
+
+			auto tempMap = powerPlant->getStoredResources();
+			std::map<GridResourceType, int>::iterator it;
+			it = tempMap.find(type);
+
+			if(it != tempMap.end())
+				amount += powerPlant->getStoredResources().at(type);
+		}
+	}
+	return amount;
+}
+
+//gets number of resources not in the market or not stored by players
+int PlayingState::getResourcesInSupply(GridResourceType type, std::vector<std::shared_ptr<Player>> players)
+{
+	//get resources owned by players
+	int amount = getNumOfResourcesOwned(type, players);
+
+	//get resources in the market
+	amount += m_gridResourceMarket->getAvailableResourceType(type);
+
+	return m_gridResourceMarket->getMaxCapacity(type) - amount;
+}
+
