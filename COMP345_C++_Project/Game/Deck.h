@@ -1,5 +1,4 @@
 #pragma once
-#include "Card.h"
 #include "PowerPlant.h"
 #include "StepCard.h"
 #include <vector>
@@ -23,6 +22,7 @@ public:
 	void shuffleMarket(std::vector<std::shared_ptr<Card>>& m_deck);
 	void setMarketSize(int size) { m_powerPlantMarketSize = size; }
 	void removeSmallestPowerPlant();
+	void removeHighestPlantFromMarket();
 	void removePlantFromMarket(int index);
 	void removeStep3Card();
 	void setStep3Market();

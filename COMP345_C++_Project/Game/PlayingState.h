@@ -59,9 +59,14 @@ public:
 	void phase4End();
 
 	void doPhase5();
-	void phase5Start();
+	void phase5PowerCities1();
+	void phase5PowerCities2(std::shared_ptr<PowerPlant> powerPlant);
+	void chooseResourceToConsume1(std::shared_ptr<PowerPlant> powerPlant);
+	void chooseResourceToConsume2(int amount);
+	void phase5Bureaucracy();
 	void endPhase5();
-	void bureaucracyPhase();
+
+	void gameOver();
 
 	void printGameInfo();
 
@@ -74,6 +79,9 @@ public:
 	};
 
 	int getNextPlayer();
+
+	int getNumOfResourcesOwned(GridResourceType type, std::vector<std::shared_ptr<Player>> players);
+	int getResourcesInSupply(GridResourceType type, std::vector<std::shared_ptr<Player>> players);
 
 private:
 	std::vector<std::shared_ptr<Player>> m_players;
@@ -95,6 +103,15 @@ private:
 	std::map<Player*, bool> m_canPlayerBuy;
 	std::shared_ptr<Player> m_highestBidder;
 
+	//holds all potential winners which are players that have more cities than the amount to end the game
+	std::vector<std::shared_ptr<Player>> m_potentialWinners;
+	std::shared_ptr<Player> m_winner;
+
+	//keeps track of which power plants a player used during their turn of phase 5
+	std::vector<std::shared_ptr<Card>> m_usedPowerPlants;
+	//keeps track of how many cities players are powering for their turns
+	int m_poweredCities;
+
 	int m_currentBid;
 	unsigned int m_powerPlantIndex;
 	unsigned int m_resourceIndex;
@@ -103,6 +120,7 @@ private:
 	bool m_playing;
 	bool m_quit;
 	bool m_firstTurn;
+	bool m_gameOver;
 };
 
 #endif

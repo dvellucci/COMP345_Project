@@ -78,7 +78,7 @@ void Deck::setUpDeck(std::string filename)
 
 void Deck::setUpMarket()
 {
-	for (int i = 0; i < m_powerPlantMarketSize; i++)
+	for (unsigned int i = 0; i < m_powerPlantMarketSize; i++)
 	{
 		std::shared_ptr<Card> top = m_deck[0];
 		m_powerPlantMarket.push_back(top);
@@ -121,6 +121,7 @@ void Deck::outputPowerPlant(std::shared_ptr<PowerPlant> plant)
 
 void Deck::shuffleMainDeck()
 {
+
 }
 
 void Deck::shuffleMarket(std::vector<std::shared_ptr<Card>>& m_deck)
@@ -128,6 +129,7 @@ void Deck::shuffleMarket(std::vector<std::shared_ptr<Card>>& m_deck)
 	
 }
 
+//removes the smallest power plant from the market
 void Deck::removeSmallestPowerPlant()
 {
 	if (m_powerPlantMarket.size() > 0)
@@ -136,6 +138,13 @@ void Deck::removeSmallestPowerPlant()
 	}
 }
 
+void Deck::removeHighestPlantFromMarket()
+{
+	auto highestPlant = m_powerPlantMarket.back();
+	m_deck.push_back(highestPlant);
+	m_powerPlantMarket.pop_back();
+}
+ 
 void Deck::removePlantFromMarket(int index)
 {
 	m_powerPlantMarket.erase(m_powerPlantMarket.begin() + index);

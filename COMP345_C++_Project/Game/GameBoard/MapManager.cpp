@@ -154,13 +154,13 @@ int MapManager::getShortestPath(std::string fromCity, std::string toCity)
 				path.push(tmpCity->city->m_cityName);
 				tmpCity = citiesComparable[tmpCity->parent];
 			}
-			cout << "Possible path:";
+			/*cout << "Possible path:";
 			while (!path.empty())
 			{
 				cout << "\t" << path.top();
 				path.pop();
 			}
-			cout << endl;
+			cout << endl;*/
 
 			return topCityCostComparable->cost;
 		}

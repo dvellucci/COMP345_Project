@@ -19,6 +19,11 @@ void GridResourceMarket::setResourceMarket()
 	createOilResources();
 	createGarbageResources();
 	createUraniumResources();
+
+	m_market.emplace(std::make_pair(GridResourceType::Coal, m_coalResources));
+	m_market.emplace(std::make_pair(GridResourceType::Oil, m_oilResources));
+	m_market.emplace(std::make_pair(GridResourceType::Garbage, m_garbageResources));
+	m_market.emplace(std::make_pair(GridResourceType::Uranium, m_uraniumResources));
 }
 
 //load the coordinates of the resource sprites from the text file
@@ -73,8 +78,7 @@ void GridResourceMarket::loadMarketResource(std::string filename)
 		{
 			float x = stof(fileStrings[i].substr(0, fileStrings[i].find('-')));
 			float y = stof(fileStrings[i].substr(fileStrings[i].find('-') + 1));
-			m_oilResources[i]->getResourceSprite().setPosition(x, y);
-			
+			m_oilResources[i]->getResourceSprite().setPosition(x, y);			
 		}
 		str.clear();
 		fileStrings.clear();
@@ -235,6 +239,23 @@ void GridResourceMarket::createUraniumResources()
 
 	for(auto& resource : m_uraniumResources)
 		resource->getResourceSprite().setTexture(ResourceHolder::Instance()->get(Textures::Uranium));
+}
+
+void GridResourceMarket::reSupplyResource(GridResourceType type, int amount)
+{
+	auto resources = m_market.at(type);
+	for (size_t i = resources.size() - 1; i >= 0; i--)
+	{
+		//if theres no more of the resource to supply
+		if (amount == 0)
+			break;
+
+		if (!resources[i]->getIsAvailable())
+		{
+			resources[i]->setAvailability(true);
+			amount--;
+		}
+	}
 }
 
 //draw all the resources if they are available for purchase
@@ -415,10 +436,20 @@ int GridResourceMarket::getPriceOfResources(GridResourceType type, int amount)
 	return price;
 }
 
+int GridResourceMarket::getMaxCapacity(GridResourceType type)
+{
+	if (type == GridResourceType::Coal || type == GridResourceType::Oil || type == GridResourceType::Garbage)
+		return RESOURCE;
+	else if (type == GridResourceType::Uranium)
+		return URANIUM;
+
+	return 0;
+}
+
 GridResourceType GridResourceMarket::getResourceTypeByName(std::string name)
 {
 	//return coal by default
-	GridResourceType resourceType = Coal;
+	GridResourceType resourceType = No_Resource;
 	std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 
 	if (name == "coal")
