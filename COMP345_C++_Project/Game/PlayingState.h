@@ -84,6 +84,9 @@ public:
 	int getResourcesInSupply(GridResourceType type, std::vector<std::shared_ptr<Player>> players);
 
 private:
+
+	void clearCinInput(std::string error);
+
 	std::vector<std::shared_ptr<Player>> m_players;
 	std::vector<std::shared_ptr<Player>> m_playerOrder; //the order that the players will play in each turn
 	std::shared_ptr<Player> m_currentPlayer; //pointer to current player
@@ -101,6 +104,7 @@ private:
 	//holds the info of whether a player can bid/buy a power plant in a turn
 	std::map<Player*, bool> m_canPlayerBid;
 	std::map<Player*, bool> m_canPlayerBuy;
+	//keep track of the highest bidder during an auction
 	std::shared_ptr<Player> m_highestBidder;
 
 	//holds all potential winners which are players that have more cities than the amount to end the game

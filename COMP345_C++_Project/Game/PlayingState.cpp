@@ -110,9 +110,7 @@ void PlayingState::setNumOfPlayers()
 	std::cout << "Enter number of players between 2 and 6." << std::endl;
 	while (!(std::cin >> numOfPlayers) || numOfPlayers < 2 || numOfPlayers > 6)
 	{
-		std::cin.clear();
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		std::cout << "Invalid input. Enter a number between 2 and 6." << std::endl;
+		clearCinInput("Invalid input. Enter a number between 2 and 6.");
 	}
 
 	for (int i = 1; i <= numOfPlayers; i++)
@@ -139,15 +137,21 @@ void PlayingState::setUpMap()
 	std::cout << "Enter the number of the map to play" << std::endl;
 	while (!(std::cin >> mapNum) || mapNum < 0 || mapNum > (int)m_mapManager->getAvailableMaps().size())
 	{
-		std::cin.clear();
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		std::cout << "Invalid input. Enter a number corresponding with a map." << std::endl;
+		clearCinInput("Invalid input. Enter a number corresponding with a map.");
 	}
 
 	//parse the map data and the set the coordinates of the regions
 	std::string mapStr = m_mapManager->getAvailableMaps()[mapNum - 1];
 	std::transform(mapStr.begin(), mapStr.end(), mapStr.begin(), ::tolower);
-	m_mapManager->loadMap("Maps/" + mapStr + ".txt");
+
+	//if the map is not valid, go back to game setup
+	if (!m_mapManager->loadMap("Maps/" + mapStr + ".txt"))
+	{
+		std::cout << "Invalid map." << std::endl;
+		setNextState(GameStates::INTRO);
+		m_quit = true;
+		return;
+	}
 
 	//load map texture
 	ResourceHolder::Instance()->loadTexture(Textures::Map, "Textures/Maps/" + mapStr + ".png");
@@ -165,12 +169,16 @@ void PlayingState::setUpGame()
 	setUpMap();
 	m_deckManager->setUpDeck(Deck::cardsFilePath);
 
-	//set up the player order container and randomize it for the first turn
-	for (auto& player : m_players)
-		m_playerOrder.push_back(player);
-	std::random_shuffle(m_playerOrder.begin(), m_playerOrder.end());
+	//if map setup is successful
+	if (!m_quit)
+	{
+		//set up the player order container and randomize it for the first turn
+		for (auto& player : m_players)
+			m_playerOrder.push_back(player);
+		std::random_shuffle(m_playerOrder.begin(), m_playerOrder.end());
 
-	std::cout << "Press enter to begin playing the game." << std::endl;
+		std::cout << "Press enter to begin playing the game." << std::endl;
+	}
 }
 
 void PlayingState::phase1Start()
@@ -194,7 +202,7 @@ void PlayingState::updatePlayerOrder(bool reverse)
 	//sort the player order based on who has the highest power plant
 	std::sort(m_playerOrder.begin(), m_playerOrder.end(), checkPlayerPriority());
 
-	//reverse the order (used in step 4)
+	//reverse the order 
 	if (reverse)
 		std::reverse(m_playerOrder.begin(), m_playerOrder.end());
 }
@@ -231,9 +239,7 @@ void PlayingState::phase2StartAuction()
 		std::cout << "Would player " << m_currentPlayer->getPlayerNumber() << " like to start an auction? Enter 1 for yes, 0 for no." << std::endl;
 		while (!(std::cin >> isPlayerBidding) || (isPlayerBidding != 0 && isPlayerBidding != 1))
 		{
-			std::cin.clear();
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			std::cout << "Invalid input. Enter 1 for yes, 0 for no." << std::endl;
+			clearCinInput("Invalid input. Enter 1 for yes, 0 for no.");
 		}
 	}
 
@@ -251,18 +257,14 @@ void PlayingState::phase2StartAuction()
 		auto tempCard2 = std::dynamic_pointer_cast<PowerPlant>(m_deckManager->getPowerPlantMarket()[index]);
 		while (!(std::cin >> index) || index < 0 || index >= m_deckManager->getPowerPlantMarket().size())
 		{
-			std::cin.clear();
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			std::cout << "Invalid number for the power plant. Enter a valid number." << std::endl;
+			clearCinInput("Invalid number for the power plant. Enter a valid number.");
 		}
 
 		std::cout << "Place a bid for the power plant." << std::endl;
 		int bid = 0;
 		while (!(std::cin >> bid))
 		{
-			std::cin.clear();
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			std::cout << "Invalid input for a bid. Place a bid for the power plant." << std::endl;
+			clearCinInput("Invalid input for a bid. Place a bid for the power plant.");
 		}
 
 		phase2BidOnPlant(index, bid, false);
@@ -347,9 +349,7 @@ void PlayingState::phase2NextBid(int bid)
 			int isPlayerBidding = 0;
 			while (!(std::cin >> isPlayerBidding) || (isPlayerBidding != 0 && isPlayerBidding != 1) || m_currentPlayer->getElektro() < m_currentBid)
 			{
-				std::cin.clear();
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-				std::cout << "Invalid input for a bid. Enter 1 for yes, 0 for no." << std::endl;
+				clearCinInput("Invalid input for a bid. Enter 1 for yes, 0 for no.");
 			}
 
 			//if player wants to bid
@@ -359,9 +359,8 @@ void PlayingState::phase2NextBid(int bid)
 				int bid = 0;
 				while (!(std::cin >> bid) || bid <= m_currentBid || bid > m_currentPlayer->getElektro())
 				{
-					std::cin.clear();
-					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-					std::cout << "Invalid input for a bid. Place a bid for the power plant. Current bid is at " << m_currentBid << "." << std::endl;
+					clearCinInput("Invalid input for a bid. Place a bid for the power plant.");
+					std::cout << "Current bid is at " << m_currentBid << "." << std::endl;
 				}
 
 				//set the new highest bid and make the current player the highest bidder
@@ -484,9 +483,7 @@ void PlayingState::phase3BuyResources1()
 		int amount = 0;
 		while (!(std::cin >> amount))
 		{
-			std::cin.clear();
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			std::cout << "Invalid Input. Enter an amount to buy." << std::endl;
+			clearCinInput("Invalid Input. Enter an amount to buy.");
 		}
 		phase3BuyResources2(amount);
 	}
@@ -567,9 +564,7 @@ void PlayingState::phase4BuyCities1()
 	bool isBuying = false;
 	while (!(std::cin >> isBuying) || (isBuying != 0 && isBuying != 1))
 	{
-		std::cin.clear();
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		std::cout << "Invalid Input. Enter a 1 for yes, 0 for no." << std::endl;
+		clearCinInput("Invalid Input. Enter a 1 for yes, 0 for no.");
 	}
 
 	if (!isBuying)
@@ -943,7 +938,6 @@ void PlayingState::phase5Bureaucracy()
 
 void PlayingState::endPhase5()
 {
-
 	//if the step 3 card was drawn, 
 	if (m_deckManager->drewStep3Card())
 	{
@@ -1022,5 +1016,12 @@ int PlayingState::getResourcesInSupply(GridResourceType type, std::vector<std::s
 	amount += m_gridResourceMarket->getAvailableResourceType(type);
 
 	return m_gridResourceMarket->getMaxCapacity(type) - amount;
+}
+
+void PlayingState::clearCinInput(std::string error)
+{
+	std::cin.clear();
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	std::cout << error << std::endl;
 }
 

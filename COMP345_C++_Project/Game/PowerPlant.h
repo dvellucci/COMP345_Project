@@ -12,7 +12,7 @@ public:
 	~PowerPlant();
 	
 	void setValidResource(GridResourceType type) { m_validResources.push_back(type); }
-	std::vector<GridResourceType> getValidResources() { return m_validResources; }
+
 
 	std::string getResourceTypeName(GridResourceType type);
 	bool storeResource(GridResourceType type, int amount);
@@ -23,6 +23,7 @@ public:
 	int getNumOfPlacedResources();
 	int getNumOfPlacedResourcesByType(GridResourceType type);
 
+	std::vector<GridResourceType> getValidResources() { return m_validResources; }
 	std::map<GridResourceType, int>& getStoredResources() { return m_storedResources; }
 
 private:

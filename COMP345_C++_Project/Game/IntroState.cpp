@@ -4,6 +4,7 @@
 
 IntroState::IntroState() : close(false)
 {
+	std::cout << "Press enter to enter the game setup." << std::endl;
 	m_titleSprite.setTexture(ResourceHolder::Instance()->get(Textures::Title));
 	m_titleSprite.setOrigin(m_titleSprite.getLocalBounds().width / 2.0f, m_titleSprite.getLocalBounds().height / 2.0f);
 	m_titleSprite.setPosition((float)mapWidth / 2, (float)mapHeight / 2);
